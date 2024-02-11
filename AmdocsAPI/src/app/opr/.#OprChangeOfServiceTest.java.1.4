@@ -1,0 +1,222 @@
+package app.opr;
+
+// Java lib classes
+import java.util.ArrayList;
+
+// Support utility classes
+import util.Login;
+import util.Parameters;
+import util.PrintOutput;
+
+// Library exception and service classes
+import amdocs.amsp.exception.AmspServiceException;
+import amdocs.amsp.services.OpChangeOfServiceFacade;
+
+// Library value Objects
+import amdocs.amsp.valueobject.accountviewwip.OrderGroupVO;
+import amdocs.amsp.valueobject.accountviewwip.WipTaskInfoVO;
+import amdocs.amsp.valueobject.customer.CustomerDetailsVO;
+import amdocs.amsp.valueobject.order.OrderInfoVO;
+import amdocs.amsp.valueobject.order.OrderResultVO;
+import amdocs.amsp.valueobject.order.OrderVO;
+import amdocs.amsp.valueobject.opquery.PollRecalculateServicesVO;
+import amdocs.amsp.valueobject.schedule.ScheduleVO;
+import amdocs.amsp.valueobject.servicepoint.RateCodeVO;
+import amdocs.amsp.valueobject.servicepoint.ServicePointVO;
+import amdocs.amsp.valueobject.servicepoint.TaskVO;
+import amdocs.amsp.valueobject.site.SiteDetailsVO;
+
+// Support classes
+import app.get.GetCustomerDetailsVO_Test;
+import app.get.GetNewChangeOfServiceOrderTest;
+import app.get.GetOpenOrderGroupListTest;
+import app.get.GetRateCodeDetailTest;
+import app.get.GetSiteDetailVO_Test;
+import app.get.GetWorkTaskCodesTest;
+import app.misc.RecalculateServicesTest;
+import app.set.SetTaskVO_Test;
+import app.update.UpdateOrderInfoVO_Test;
+import app.update.UpdateRateCodeVO_Test;
+import app.update.UpdateScheduleVO_Test;
+import app.update.UpdateServicePointVO_Test;
+
+public class OprChangeOfServiceTest
+{
+	// Create class instances
+	private CustomerDetailsVO customerDetailsVO = new CustomerDetailsVO();
+	private GetCustomerDetailsVO_Test getCustomerDetailsTest = new GetCustomerDetailsVO_Test();
+	
+	private OpChangeOfServiceFacade opChangeOfServiceFacade = new OpChangeOfServiceFacade();
+	
+	private PollRecalculateServicesVO pollRecalculateServicesVO = new PollRecalculateServicesVO();
+	private RecalculateServicesTest pollRecalculateServicesTest = new RecalculateServicesTest();
+	
+	private OrderGroupVO[] orderGroupVOList = null;
+	private GetOpenOrderGroupListTest getOpenOrderGroupListTest = new GetOpenOrderGroupListTest();
+	
+	private OrderInfoVO  orderInfoVO = new OrderInfoVO();
+	private UpdateOrderInfoVO_Test updateOrderInfoVO_Test = new UpdateOrderInfoVO_Test();
+
+	private OrderResultVO orderResultVO = new OrderResultVO();
+
+	private OrderVO orderVO = new OrderVO();
+	private OrderVO recalcOrderVO = new OrderVO();
+	private GetNewChangeOfServiceOrderTest getNewChangeOfServiceOrderTest = new GetNewChangeOfServiceOrderTest();
+	
+	private RateCodeVO[] rateCodeVOList = null;
+	private ArrayList<RateCodeVO> DynRateCodeVOList = new ArrayList<RateCodeVO>();
+	private GetRateCodeDetailTest getRateCodeDetailTest = new GetRateCodeDetailTest();
+	private UpdateRateCodeVO_Test updateRateCodeVO_Test = new UpdateRateCodeVO_Test();
+	
+	private ServicePointVO[] servicePointVOList = null;
+	private UpdateServicePointVO_Test updateServicePointVO_Test = new UpdateServicePointVO_Test();
+	
+	private ScheduleVO scheduleVO = new ScheduleVO();
+	private UpdateScheduleVO_Test updateScheduleVO_Test = new UpdateScheduleVO_Test();
+
+	private SiteDetailsVO siteDetailsVO = null;
+	private GetSiteDetailVO_Test getSiteDetailTest = new GetSiteDetailVO_Test();
+
+	private TaskVO[] taskVOList = new TaskVO[1];
+	private SetTaskVO_Test setTaskVO_Test = new SetTaskVO_Test();
+
+	private WipTaskInfoVO wipTaskInfoVO = new WipTaskInfoVO();
+	private GetWorkTaskCodesTest getWorkTaskCodesTest = new GetWorkTaskCodesTest();
+	
+	public boolean getData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		customerDetailsVO = getCustomerDetailsTest.getCustomerDetail(apiParams, login, printOutput);
+				
+		if (!customerDetailsVO.getStatus().equals("5")) { // Must be active for the operation to work
+			return false;
+		}
+		
+		orderGroupVOList = getOpenOrderGroupListTest.getOpenOrderGroupList(apiParams, login, printOutput);
+		
+        siteDetailsVO = getSiteDetailTest.getSiteDetail(apiParams, login, printOutput);
+		
+		orderVO = getNewChangeOfServiceOrderTest.getNewChangeOfServiceOrder(apiParams, login, printOutput);
+        
+        wipTaskInfoVO = getWorkTaskCodesTest.loadTaskInfoVO(apiParams, login, printOutput, apiParams.getTaskCode());
+        
+        return true;
+	} // End of getData method
+	
+	public void setData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		taskVOList[0] = setTaskVO_Test.setTaskVOforChangeOfService(apiParams, 
+																   printOutput, 
+																   wipTaskInfoVO);
+		servicePointVOList = orderVO.getServicePointList();
+		
+		// Loop through existing Service Points to process Rate Codes
+		for (int x = 0; x < servicePointVOList.length; x++) {
+			
+			// Add all existing Rate Codes on current Service Point to a list
+			for (int i = 0; i < servicePointVOList[x].getRateCodeList().length; i++) {
+	        	DynRateCodeVOList.add(servicePointVOList[x].getRateCodeList()[i]);
+	        }
+			
+			// Look for target Service Point to add new Rate Code to
+			if (servicePointVOList[x].getServicePoint() == apiParams.getServicePointTarget()) {
+				// Append new Rate Code to the list
+				DynRateCodeVOList.add(getRateCodeDetailTest.getRateCodeDetail(apiParams, 
+						 													  login, 
+						 													  printOutput, 
+						 													  1)); // 1 acts on rateCode1 in params
+
+				DynRateCodeVOList.add(getRateCodeDetailTest.getRateCodeDetail(apiParams, 
+						  													  login, 
+						  													  printOutput, 
+						  													  2)); // 2 acts on rateCode2 in params
+			}
+			
+			// Convert the list to an array
+			if (DynRateCodeVOList.isEmpty() == false) {
+				rateCodeVOList = DynRateCodeVOList.toArray(new RateCodeVO[DynRateCodeVOList.size()]);
+			}
+			
+			if (servicePointVOList[x].getServicePoint() == apiParams.getServicePointTarget()) {
+				// Update the Rate Codes being added
+				updateRateCodeVO_Test.updateRateCodeVOforChangeOfService(apiParams, 
+						 												 printOutput, 
+						 												 rateCodeVOList[rateCodeVOList.length - 2]);
+				
+				updateRateCodeVO_Test.updateRateCodeVOforChangeOfService(apiParams, 
+						 												 printOutput, 
+						 												 rateCodeVOList[rateCodeVOList.length - 1]);
+				
+				// Update the Service Point
+				updateServicePointVO_Test.updateServicePointVOforChangeOfService(apiParams, 
+																				 printOutput, 
+																				 servicePointVOList[x], 
+																				 rateCodeVOList, 
+																				 orderGroupVOList, 
+																				 taskVOList);
+			}
+			
+			// Clear list and array for next possible use
+			DynRateCodeVOList.clear();
+			rateCodeVOList = null;
+			
+		} // End of ServicePointVOList loop
+		
+		orderVO.setServicePointList(servicePointVOList);
+		
+		orderInfoVO = orderVO.getOrderInfoList();
+		
+		scheduleVO = orderInfoVO.getSchedule();
+		updateScheduleVO_Test.updateScheduleVOforChangeOfService(apiParams, 
+																 printOutput, 
+																 scheduleVO);
+		
+		updateOrderInfoVO_Test.updateOrderInfoVOforChangeOfService(apiParams, 
+																   printOutput, 
+																   customerDetailsVO,
+																   orderGroupVOList, 
+																   orderInfoVO, 
+																   scheduleVO);
+		
+		orderVO.setOrderInfoList(orderInfoVO);
+		
+		pollRecalculateServicesVO = pollRecalculateServicesTest.recalculateServices(apiParams, 
+																					printOutput, 
+																					login, 
+																					orderVO, 
+																					customerDetailsVO, 
+																					siteDetailsVO);
+		
+		recalcOrderVO = pollRecalculateServicesVO.getOrderVO();
+		
+		printOutput.printToShell(apiParams, 
+				 				 getClass().getName() + ":<recalcOrderVO>" +	recalcOrderVO.toString() + "</recalcOrderVO>",
+				 				 orderVO.toXml());
+		       
+	} // end of setData method
+	
+	public void saveData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		try {
+			orderResultVO = opChangeOfServiceFacade.changeOfService(customerDetailsVO,
+																    siteDetailsVO,
+																    recalcOrderVO, // Use OrderVO from recalculate method
+																    null, // MoneyTransactionVO is not required
+																    apiParams.getQueueHsdsHitFlag(),
+																    apiParams.getOverriddenRuleIds(),
+																    apiParams.getCorp(),
+																    login.getTicket());
+			if (orderResultVO != null) {
+				printOutput.printToShell(apiParams, 
+										 getClass().getName() + ":<orderResultVO>" + orderResultVO.toString() + "</orderResultVO>", 
+										 orderResultVO.toXml());
+			}
+			else {
+				printOutput.printToShell(apiParams, 
+										 getClass().getName() + "orderResultVO is null",
+										 null);
+			}
+			
+		} catch (AmspServiceException e) {
+			printOutput.printExceptionToShell(apiParams, getClass().getName(), e);
+		}
+	} // End of saveData method
+} // end of ChangeOfService class

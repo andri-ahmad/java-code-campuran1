@@ -1,0 +1,57 @@
+
+
+Severity:ERROR Date:10-01-2018 Time:13:52:34
+Description:Failed to load included file on node "/core/amsp". Segment "amsp.confa" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:13:52:34
+Description:Failed to load included file on node "/core/amsp". Segment "amsp.confa" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:13:59:30
+Description:Failed to load included file on node "/core/amsp". Segment "amsp.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:13:59:30
+Description:Failed to load included file on node "/core/amsp". Segment "amsp.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:00:39
+Description:Failed to load included file on node "/core/amsp/uif/Logging". Segment "./logging.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:00:39
+Description:Failed to load included file on node "/core/amsp/uif/Logging". Segment "./logging.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:02:46
+Description:Failed to load included file on node "/core/amsp/LIC". Segment "./amsplic.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:02:46
+Description:Failed to load included file on node "/core/amsp/LIC". Segment "./amsplic.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:05:12
+Description:Failed to load included file on node "/core/amsp/sysconfig". Segment "sysconfig.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:05:12
+Description:Failed to load included file on node "/core/amsp/sysconfig". Segment "sysconfig.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:07:14
+Description:Failed to load included file on node "/core/amsp/Ruleengine". Segment "rulemaintenance.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:07:14
+Description:Failed to load included file on node "/core/amsp/Ruleengine". Segment "rulemaintenance.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:08:02
+Description:Failed to load included file on node "/core/amsp/Custom". Segment "amspcustom.conf" is not on the lookup path.
+Throws:
+
+Severity:ERROR Date:10-01-2018 Time:14:08:02
+Description:Failed to load included file on node "/core/amsp/Custom". Segment "amspcustom.conf" is not on the lookup path.
+Throws:

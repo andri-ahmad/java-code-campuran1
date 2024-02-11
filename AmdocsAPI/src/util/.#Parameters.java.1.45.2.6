@@ -1,0 +1,1115 @@
+package util;
+import java.math.*;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import amdocs.amsp.AddressConstantsI;
+import amdocs.amsp.Configuration;
+import amdocs.amsp.FrameworkConstantsI;
+import amdocs.amsp.ServiceConstantsI;
+import amdocs.amsp.util.AmspUtil;
+import app.get.GetCodeTableCodeTest;
+
+/**
+ * @author JVANHOOF
+ * This class holds all the common and operational specific values used in API parameters
+ */
+
+public class Parameters {
+	
+	GetCodeTableCodeTest getCodeTableCodeTest = new GetCodeTableCodeTest();
+	
+	// add new operations that require specific parameter values to the bottom of this list and add
+	// a matching case to the switch statement in the constructor
+	public static int NEW_PROSPECT                =  0;
+	public static int NEW_PROSPECT_OFFER          =  1;
+	public static int GET_AVAILABLE_PHONE_NUMBERS =  2;
+	public static int DEMO                        =  3;
+	public static int NEW_INSTALL                 =  4;
+	public static int SEND_DIRECT_HIT             =  5;
+	public static int CANCEL_SRO                  =  6;
+	public static int OPERATOR                    =  7;
+	public static int GET_TECH_JOBS               =  8;
+	public static int ASSIGN_EQUIP                =  9;
+	public static int CHANGE_UPGRADE_HOLD         = 10;
+	public static int CREATE_NEW_ENT_SALESMAN     = 11;
+	public static int UPDATE_ENT_SALESMAN         = 12;
+	public static int CREATE_SITE                 = 13;
+	public static int PROSPECT_OFFER_SITE         = 14;
+	public static int UPDATE_CUST_DATA            = 15;
+	public static int PROSPECT_OFFER_SITE_TOOL    = 16;
+	public static int UPDATE_ENTERPRISE_OPERATOR  = 17;
+	public static int PROSPECT_OFFER_SITE_DEMO    = 18;
+	public static int RE_ASSIGN_TECH_JOBS         = 19;
+	public static int CHANGE_OF_SERVICE           = 20;
+	public static int CONSTRAINTS_DUMP            = 21;
+	public static int PAYCARD_INFO                = 22;
+	public static int CHANGE_OF_SERVICE_2         = 23;
+	public static int RESCHEDULE_ORDER            = 24;
+	public static int GET_TELEPHONY_SERVICES      = 25;
+	public static int TEMP_OPERATION              = 99;
+	
+	// App
+	private String     appName          = "API Testing Client";
+	private String     appVersion       = "1.2";
+	private String     amspVersion      = "9.0";
+	
+	// API test app settings
+	private String     file_name       = "API_output";
+	private String     file_path       = "c:\\temp\\";  // Double backslashes are "escaped" single backslashes
+	private int        outputMode      = 2;  // 0 = console only, 1 = screen only, 2 = screen and print files, 3 = tool messages only
+	
+	// Common to all API operations         
+	private String     corp            = "99517";
+	private String     locale          = FrameworkConstantsI.DEFAULT_LOCALE;
+	private String     password        = "7913Jv43";
+	private String     user            = "jvanhoof"; // char(8)
+	
+	// Add new operational parameters here and to the printParameters in case statement
+	//    1. Create and initialize it here
+	//    2. Create a get method for it below
+	//    3. Set and print the value in the appropriate section of the case statement
+	private int        accountingArea           = -1;
+	private int        accountCategory          = -1;
+	private int        addressUse               = -1;
+	private int        addressType              = -1;   // Valid Values: 1=business ,2= residential 
+	private short      allowInvalidZip          = -1;   // valid values: 0 = false:validates the user input, 1= true: Allows whatever the user entered input
+	private Date       billDate                 = null;
+	private String     billForm                 = null; // char(5) Billing form (36 code table number 124)
+	private String     callerName               = null; // char(9)
+	private String     cancelReason             = null; // char(5) WIP Cancel reason (36 code table number 133
+	private String     changeReason             = null; // char(5) WIP Change reason (36 code table number xxx
+	private Date       cdwDate                  = null;
+	private String     codCode                  = null;
+	private Date       collStatDate             = null;
+	private String     comment                  = null; // varies by use
+	private String[]   corpList                 = {""};
+	private String[]   corpSet                  = {""};
+	private String     corpSetTarget            = null;
+	private String     cust_acct                = null; // char(8)
+	private int        cycle                    = -1;
+	private boolean    duplicateAddressFlag     = false;
+	private String     equipmentId              = null; // char(14) bmumb in boxinvtry
+	private String     equipmentLocation        = null;
+	private short      equipmentVOaction        = -1;   //Valid Values:no change = 0, change = 1, add = 2, remove = 3
+	private String     firstName                = null; // char(20)
+	private String     fromTech                 = null; // char(6)
+	private String     homePhone                = null; // char(14)
+	private String     initial                  = null; // char(2)
+	private boolean    isProspect               = false;
+	private int        installType              = -1;
+	private boolean    isFrontCounterMode       = false;
+	private boolean    isMustDo                 = false;
+	private boolean    isOffer                  = false;
+	private int        jobType                  = -1;
+	private String     lastName                 = null; // char(20)
+	private BigDecimal offernum                 = null; // = new BigDecimal("5909");
+	private String     operatorId               = null; // char(3)
+	private String     operatorStatus           = null; // char(1)
+	private short      orderInfoVOaction        = -1;
+	private BigDecimal orderGroupSeq            = null;
+	private int        orderType                = -1;
+	private String[]   overriddenRuleIds        = {"",""};
+	private int        outlet                   = 0;
+	private String     phoneClass               = null; // char(2) PHONE_NUM_CLAS column from PHONE_NUMBER_INVENTORY
+	private String     phoneNumber              = null; // char(14)
+	private boolean    phoneNumberReplaceFlag   = false;
+	private int        phoneNumSearch           = -1;
+	private boolean    plant                    = false;
+	private short      points                   = -1;
+	private String     productLanguage          = null; // char(5) Product Language identifier code 36 table 167
+	private String     rateCode1                = null; // char(2)
+	private String     rateCode2                = null; // char(2)
+	private String     rateCode3                = null; // char(2)
+	private String     rateCode4                = null; // char(2)
+	private short      rateCodeVOaction         = -2;   // -1=Inactive, no change = 0, change = 1, add = 2, remove = 3
+	private boolean    queueHsdsHitFlag         = false;
+	private String     reminderScheme           = null; // char(5) Reminder scheme for collection process (36 code table number 122)
+	private String     salesRepId               = null; // char(6) 
+	private Date       scheduleDate             = null;
+	private int        scheduleType             = -1;
+	private short      scheduleVOaction         = -1;
+	private int        serviceGroup             = -1;
+	private String     servicePackage           = null; // char(2)
+	private int        servicePoint             = -1;
+	private int        servicePointTarget       = -1;
+	private String     servicePointLocationCode = null; // char(5) 36 code table number 163
+	private short      servicePointVOaction     = -1;   // valid values are :no change = 0, change = 1, add = 2, remove = 3
+	private String     siteId                   = null; // char(8)
+	private Boolean    skipPayCard              = false;
+	private Boolean    skipServicePointData     = false;
+	private String     statementScheme          = null; // char(5) Valid Values: A - D Must be in the parameter statement scheme table
+	private int        status                   = -1;   // used in SalesmanDetailsVO
+	private String     taskCode                 = null; // char(10) code95 table number 201
+	private String     techId                   = null; // char(6)
+	private String     toTech                   = null; // char(6)
+	private String     type                     = null; // used in SalesmanDetailsVO
+	private String     userName                 = null; // used in getEnterpriseOperator
+
+	@SuppressWarnings("deprecation")
+
+	// Method called by all Main[...] classes at the beginning of the main method
+	public void initParameters (int operation, Parameters apiParams, PrintOutput printOutput) {
+		
+		if (operation != Parameters.PROSPECT_OFFER_SITE_TOOL) {
+			this.printCommonParameters(apiParams, printOutput);
+		}
+		
+		switch (operation) {
+		case 99: // TEMP_OPERATION
+			appName = "Temp Operation";
+			cust_acct = "45465950";
+			printOutput.printToShell (apiParams, "   TEMP_OPERATION Parameter Values",  null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct      : " + cust_acct,       null);
+			break;
+			
+		case 0: // NEW_PROSPECT
+			appName = "New Prospect";
+			printOutput.printToShell (apiParams, "   NEW_PROSPECT Operation Parameter Values",  null);
+			accountCategory = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			cust_acct = "0"; // must be 0
+			homePhone = "9165987013";
+			lastName = "PROSPECTLN08";
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			siteId   = "01000404";
+			printOutput.printToShell (apiParams, "Parameter:accountCategory: " + accountCategory, null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct      : " + cust_acct,       null);
+			printOutput.printToShell (apiParams, "Parameter:homePhone      : " + homePhone,       null);
+			printOutput.printToShell (apiParams, "Parameter:lastName       : " + lastName,        null);
+			printOutput.printToShell (apiParams, "Parameter:orderType      : " + orderType,       null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType   : " + scheduleType,    null);
+			printOutput.printToShell (apiParams, "Parameter:siteId         : " + siteId,          null);
+			break;
+			
+		case 1: // NEW_PROSPECT_OFFER
+			appName = "New Prospect Offer";
+			printOutput.printToShell (apiParams, "   NEW_PROSPECT_OFFER Operation Parameter Values",  null);
+			accountCategory = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			billDate = new Date("6-mar-2014");
+			billForm = "S    ";
+			cust_acct = "0";
+			cycle = 28;
+			installType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			isOffer = true;
+			jobType = ServiceConstantsI.JobType.JOBTYPE_INSTALL.getJobTypeValue();
+			lastName = "PROSPECTOFFERLN08";
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			points = 0;
+			productLanguage = "1";
+			rateCode1  = "PQ";
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			reminderScheme  = "A    ";
+			salesRepId = "100";
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			serviceGroup = 1;
+			servicePoint = 1;
+			servicePointLocationCode = "A1 "; // 99504 API Test location
+			servicePointVOaction = 2; // no change = 0, change = 1, add = 2, remove = 3 
+			siteId = "01000405";
+			statementScheme = "A    ";
+			taskCode = "APIINSTALL";
+			printOutput.printToShell (apiParams, "Parameter:accountCategory         : " + accountCategory,          null);
+			printOutput.printToShell (apiParams, "Parameter:billDate                : " + billDate,                 null);
+			printOutput.printToShell (apiParams, "Parameter:billForm                : " + billForm,                 null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct               : " + cust_acct,                null);
+			printOutput.printToShell (apiParams, "Parameter:cycle                   : " + cycle,                    null);
+			printOutput.printToShell (apiParams, "Parameter:installType             : " + installType,              null);
+			printOutput.printToShell (apiParams, "Parameter:isOffer                 : " + isOffer,                  null);
+			printOutput.printToShell (apiParams, "Parameter:jobType                 : " + jobType,                  null);
+			printOutput.printToShell (apiParams, "Parameter:lastName                : " + lastName,                 null);
+			printOutput.printToShell (apiParams, "Parameter:orderInfoVOaction       : " + orderInfoVOaction,        null);
+			printOutput.printToShell (apiParams, "Parameter:points                  : " + points,                   null);
+			printOutput.printToShell (apiParams, "Parameter:productLanguage         : " + productLanguage,          null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode1               : " + rateCode1,                null);
+			printOutput.printToShell (apiParams, "Parameter:rateCodeVOaction        : " + rateCodeVOaction,         null);
+			printOutput.printToShell (apiParams, "Parameter:reminderScheme          : " + reminderScheme,           null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId              : " + salesRepId,               null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType            : " + scheduleType,             null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleVOaction        : " + scheduleVOaction,         null);
+			printOutput.printToShell (apiParams, "Parameter:serviceGroup            : " + serviceGroup,             null);
+			printOutput.printToShell (apiParams, "Parameter:servicePoint            : " + servicePoint,             null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointLocationCode: " + servicePointLocationCode, null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction    : " + servicePointVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:siteId                 : " + siteId,                  null);
+			printOutput.printToShell (apiParams, "Parameter:statementScheme         : " + statementScheme,          null);
+			printOutput.printToShell (apiParams, "Parameter:taskCode                : " + taskCode,                 null);
+			break;
+			
+		case 2: // GET_AVAILABLE_PHONE_NUMBERS
+		case 3: // Demo
+			appName = "Get Available Phone Numbers Demo";
+			printOutput.printToShell (apiParams, "   GET_AVAILABLE_PHONE_NUMBERS Operation Parameter Values",  null);
+			corp = "99517";
+			cust_acct = "454658641"; // 99504
+			phoneNumSearch = 1; // phoneNumSearch - PHONE_NUMBER_SEARCH column from PARAM_TELCO
+			phoneClass = "4"; // PHONE_NUM_CLAS column from PHONE_NUMBER_INVENTORY
+			phoneNumber = null;
+			//equipmentId = "MC345678900004";  // Valid available (at lease was available...)
+			//equipmentId = "BOGUS";  // Invalid
+			equipmentId = "  SETTOP023301"; // 99504 Equipment that is on an Account
+			
+			siteId   = "01000391"; // 99517
+			printOutput.printToShell (apiParams, "Parameter:Corp          : " + corp,           null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct     : " + cust_acct,      null);
+			printOutput.printToShell (apiParams, "Parameter:phoneNumSearch: " + phoneNumSearch, null);
+			printOutput.printToShell (apiParams, "Parameter:phoneClass    : " + phoneClass,     null);
+			printOutput.printToShell (apiParams, "Parameter:phoneNumber   : " + phoneNumber,    null);
+			printOutput.printToShell (apiParams, "Parameter:equipmentId   : " + equipmentId,    null);
+			printOutput.printToShell (apiParams, "Parameter:siteId        : " + siteId,         null);
+			break;
+
+		case 4: // NEW_INSTALL
+			appName = "New Install";
+			printOutput.printToShell (apiParams, "   NEW_INSTALL Operation Parameter Values",  null);
+			accountCategory = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			accountingArea = 1;
+			billDate = new Date(this.getSystemDate());
+			billForm = "S    ";
+			cust_acct = "0";
+			cycle = 28;
+			installType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			jobType = ServiceConstantsI.JobType.JOBTYPE_INSTALL.getJobTypeValue();
+			lastName = "INSTALLLAST";
+			orderGroupSeq = new BigDecimal(0);
+			orderInfoVOaction = 2; // action - Valid values: empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			overriddenRuleIds[0] = "";
+			overriddenRuleIds[1] = "";
+			points = 0;
+			productLanguage = "1";
+			rateCode1  = "PQ";
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			reminderScheme  = "A    ";
+			salesRepId = "100";
+			scheduleDate = getBillDate();
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			serviceGroup = 1;
+			servicePackage = "IC";  // 99504 Residential T.V.
+			servicePoint = 1;
+			servicePointLocationCode = "A1 ";
+			servicePointVOaction = 2; // no change = 0, change = 1, add = 2, remove = 3
+			siteId   = "01000470";
+			statementScheme = "A    ";
+			taskCode = "APIINSTALL";
+			techId = "999";  // No Truck Tech
+			printOutput.printToShell (apiParams, "Parameter:accountCategory         : " + accountCategory,          null);
+			printOutput.printToShell (apiParams, "Parameter:accountingArea          : " + accountingArea,           null);
+			printOutput.printToShell (apiParams, "Parameter:billDate                : " + billDate,                 null);
+			printOutput.printToShell (apiParams, "Parameter:billForm                : " + billForm,                 null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct               : " + cust_acct,                null);
+			printOutput.printToShell (apiParams, "Parameter:cycle                   : " + cycle,                    null);
+			printOutput.printToShell (apiParams, "Parameter:installType             : " + installType,              null);
+			printOutput.printToShell (apiParams, "Parameter:jobType                 : " + jobType,                  null);
+			printOutput.printToShell (apiParams, "Parameter:lastName                : " + lastName,                 null);
+			printOutput.printToShell (apiParams, "Parameter:orderGroupSeq           : " + orderGroupSeq,            null);
+			printOutput.printToShell (apiParams, "Parameter:orderInfoVOaction       : " + orderInfoVOaction,        null);
+			printOutput.printToShell (apiParams, "Parameter:orderType               : " + orderType,                null);
+			printOutput.printToShell (apiParams, "Parameter:overriddenRuleIds       : " + "[0] " + overriddenRuleIds[0] + "[1] " + overriddenRuleIds[1], null);
+			printOutput.printToShell (apiParams, "Parameter:points                  : " + points,                   null);
+			printOutput.printToShell (apiParams, "Parameter:productLanguage         : " + productLanguage,          null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode1               : " + rateCode1,                null);
+			printOutput.printToShell (apiParams, "Parameter:rateCodeVOaction        : " + rateCodeVOaction,         null);
+			printOutput.printToShell (apiParams, "Parameter:reminderScheme          : " + reminderScheme,           null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId              : " + salesRepId,               null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleDate            : " + scheduleDate,             null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType            : " + scheduleType,             null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleVOaction        : " + scheduleVOaction,         null);
+			printOutput.printToShell (apiParams, "Parameter:serviceGroup            : " + serviceGroup,             null);
+			printOutput.printToShell (apiParams, "Parameter:servicePackage          : " + servicePackage,           null);
+			printOutput.printToShell (apiParams, "Parameter:servicePoint            : " + servicePoint,             null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointLocationCode: " + servicePointLocationCode, null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction    : " + servicePointVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:siteId                 : " + siteId,                  null);
+			printOutput.printToShell (apiParams, "Parameter:statementScheme         : " + statementScheme,          null);
+			printOutput.printToShell (apiParams, "Parameter:taskCode                : " + taskCode,                 null);
+			printOutput.printToShell (apiParams, "Parameter:techId	                 : " + techId,                   null);
+			break;
+			
+		case 5: // SEND_DIRECT_HIT
+			appName = "Send Direct Hit";
+			printOutput.printToShell (apiParams, "   SEND_DIRECT_HIT Operation Parameter Values",  null);
+			//equipmentId = "BOGUS";  // Invalid
+			equipmentId = "  SETTOP023301"; // Equipment that is on an Account
+			orderType = ServiceConstantsI.OrderType.ORDER_TROUBLE_CALL_NEW.getOrderTypeValue();
+			printOutput.printToShell (apiParams, "Parameter:equipmentId: " + equipmentId, null);
+			printOutput.printToShell (apiParams, "Parameter:orderType  : " + orderType,   null);
+			break;
+			
+		case 6: // CANCEL_SRO
+			appName = "Cancel SRO";
+			printOutput.printToShell (apiParams, "   CANCEL_SRO Operation Parameter Values",  null);
+			cancelReason = "API";
+			cust_acct = "45465434";
+			jobType = ServiceConstantsI.JobType.JOBTYPE_SRO.getJobTypeValue();
+			orderType = ServiceConstantsI.OrderType.ORDER_SRO_CANCEL.getOrderTypeValue();
+			queueHsdsHitFlag = false;
+			siteId   = "01000345";
+			printOutput.printToShell (apiParams, "Parameter:cancelreason    : " + cancelReason,     null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct       : " + cust_acct,        null);
+			printOutput.printToShell (apiParams, "Parameter:jobType         : " + jobType,          null);
+			printOutput.printToShell (apiParams, "Parameter:orderType       : " + orderType,        null);
+			printOutput.printToShell (apiParams, "Parameter:queueHsdsHitFlag: " + queueHsdsHitFlag, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId         : " + siteId,          null);
+			break;
+		
+		case 7: // OPERATOR
+			appName = "Operator";
+			printOutput.printToShell (apiParams, "   OPERATOR Operation Parameter Values",  null);
+			operatorId = "JVH";
+			user       = "jvanhoof";
+			printOutput.printToShell (apiParams, "Parameter:operatorId : " + operatorId, null);
+			printOutput.printToShell (apiParams, "Parameter:User       : " + user,       null);
+			break;
+			
+		case 8: // GET_TECH_JOBS
+			appName = "Get Tech Jobs";
+			printOutput.printToShell (apiParams, "   GET_TECH_JOBS Operation Parameter Values",  null);
+			cust_acct = "45465434";
+			jobType = ServiceConstantsI.JobType.JOBTYPE_SRO.getJobTypeValue(); // Not required
+			offernum = new BigDecimal(6026);
+			scheduleDate = new Date("30-dec-2013");
+			siteId = "00406180";
+			techId = "107"; //ADDISON
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct   : " + cust_acct,    null);
+			printOutput.printToShell (apiParams, "Parameter:jobType     : " + jobType,      null);			
+			printOutput.printToShell (apiParams, "Parameter:offernum    : " + offernum,     null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleDate: " + scheduleDate, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId     : " + siteId,      null);
+			printOutput.printToShell (apiParams, "Parameter:techId	     : " + techId,       null);
+			break;
+			
+		case 9: // ASSIGN_EQUIP
+			appName = "Assign Equipment";
+			printOutput.printToShell (apiParams, "   ASSIGN_EQIP Operation Parameter Values",  null);
+			cust_acct = "45465726";
+			//            |12345678901234|
+			equipmentId = "    FMT7BOB111"; // Equipment that is not on an Account
+			equipmentVOaction = 2; //Valid Values:no change = 0, change = 1, add = 2, remove = 3
+			orderGroupSeq = new BigDecimal(0); // Zero to get all Service Points
+			orderType = ServiceConstantsI.OrderType.ORDER_CHANGE_BOX.getOrderTypeValue();
+			outlet = 1;
+			overriddenRuleIds[0] = "";
+			overriddenRuleIds[1] = "";
+			serviceGroup = 1;
+			servicePointVOaction = 1; // valid values are :no change = 0, change = 1, add = 2, remove = 3
+			siteId   = "01000412";
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct           : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:equipmentId         : " + equipmentId,          null);
+			printOutput.printToShell (apiParams, "Parameter:equipmentVOaction   : " + equipmentVOaction,    null);
+			printOutput.printToShell (apiParams, "Parameter:orderGroupSeq       : " + orderGroupSeq,        null);
+			printOutput.printToShell (apiParams, "Parameter:orderType           : " + orderType,            null);
+			printOutput.printToShell (apiParams, "Parameter:outlet              : " + outlet,               null);
+			printOutput.printToShell (apiParams, "Parameter:overriddenRuleIds   : " + "[0] " + overriddenRuleIds[0] + "[1] " + overriddenRuleIds[1], null);
+			printOutput.printToShell (apiParams, "Parameter:serviceGroup        : " + serviceGroup,         null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction: " + servicePointVOaction, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId             : " + siteId,              null);
+			break;
+			
+		case 10: // CHANGE_UPGRADE_HOLD
+			appName = "Change Upgrade Hold";
+			printOutput.printToShell (apiParams, "   CHANGE_UPGRADE_HOLD Operation Parameter Values",  null);
+			collStatDate = (AmspUtil.stringToDate("2014-04-17", "yyyy-MM-dd"));
+			cust_acct = "45465726";
+			siteId   = "01000412";
+			printOutput.printToShell (apiParams, "Parameter:collStatDate: " + collStatDate, null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct   : " + cust_acct,    null);
+			printOutput.printToShell (apiParams, "Parameter:siteId     : " + siteId,      null);
+			break;
+			
+		case 11: // CREATE_NEW_ENT_SALESMAN
+			appName = "Create New Enterprise Salesman";
+			printOutput.printToShell (apiParams, "   CREATE_NEW_ENT_SALESMAN Operation Parameter Values",  null);
+			//         12345678901234567
+			comment = "API SalesM";
+			corpSet[0] = "default_corpset"; // PARAM_CORPSET_DETAIL.CORPSET VARCHAR2 (40 BYTE) 
+			initial = "AL"; // CHAR(2) 
+			lastName = "APILAST3"; // CHAR(14) 
+			salesRepId = "APIID3";// CHAR(6) Valid Values: 0-9, A-Z or a combination of both and up to 6 characters, but alone zero is not valid. 
+			status = 1; // CHAR(1) Valid Values: 0 = Inactive 1 = Active 2 = Deleted.
+			type = "C    "; // CHAR(5) (36 code table number 101) C = CUSTOMER SERVICE in 99504
+			printOutput.printToShell (apiParams, "Parameter:comment   : " + comment,             null);
+			printOutput.printToShell (apiParams, "Parameter:corpSet   : " + "[0] " + corpSet[0], null);
+			printOutput.printToShell (apiParams, "Parameter:initial   : " + initial,             null);
+			printOutput.printToShell (apiParams, "Parameter:lastName  : " + lastName,            null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId: " + salesRepId,          null);
+			printOutput.printToShell (apiParams, "Parameter:status    : " + status,              null);
+			printOutput.printToShell (apiParams, "Parameter:type      : " + type,                null);
+			break;
+			
+		case 12: //UPDATE_ENT_SALESMAN
+			appName = "Update Enterprise Salesman";
+			printOutput.printToShell (apiParams, "   UPDATE_ENT_SALESMAN Operation Parameter Values",  null);
+			comment = "API 101";
+			corpSetTarget = "ort2";
+			salesRepId = "101"; // CHAR(6) Valid Values: 0-9, A-Z or a combination of both and up to 6 characters, but alone zero is not valid.
+			status = 1; // CHAR(1) Valid Values: 0 = Inactive 1 = Active 2 = Deleted.
+			printOutput.printToShell (apiParams, "Parameter:comment      : " + comment,       null);
+			printOutput.printToShell (apiParams, "Parameter:corpsetTarget: " + corpSetTarget, null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId   : " + salesRepId,    null);
+			printOutput.printToShell (apiParams, "Parameter:status       : " + status,        null);
+			break;
+			
+		case 13: //CREATE_SITE
+			appName = "Create Site";
+			printOutput.printToShell (apiParams, "   CREATE_SITE Operation Parameter Values",  null);
+			addressType = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			addressUse = AddressConstantsI.AddrUseContext.SERVICE_ADDRESS.getAddrUseContextValue();
+			allowInvalidZip = 0; // valid values: 0 = false:validates the user input, 1= true: Allows whatever the user entered input
+			callerName = "API"; // char(9) causes FML buffer error if too big
+			corpList[0] = this.getCorp();
+			cust_acct = "0"; // must be zero to work
+			duplicateAddressFlag = false;
+			plant = false;
+			siteId   = "01000415"; // 99504 base site to be used in browse
+			printOutput.printToShell (apiParams, "Parameter:addressType         : " + addressType,          null);
+			printOutput.printToShell (apiParams, "Parameter:addressUse          : " + addressUse,           null);
+			printOutput.printToShell (apiParams, "Parameter:allowInvalidZip     : " + allowInvalidZip,      null);
+			printOutput.printToShell (apiParams, "Parameter:callerName          : " + callerName,           null);
+			printOutput.printToShell (apiParams, "Parameter:corpList[0]         : " + corpList[0],          null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct           : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:duplicateAddressFlag: " + duplicateAddressFlag, null);
+			printOutput.printToShell (apiParams, "Parameter:plant               : " + plant,                null);
+			printOutput.printToShell (apiParams, "Parameter:siteId             : " + siteId,              null);
+			break;
+			
+		case 14: // PROSPECT_OFFER_SITE
+			appName = "Prospect Offer Site";
+			printOutput.printToShell (apiParams, "   PROSPECT_OFFER_SITE Operation Parameter Values",  null);
+			addressType = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			addressUse = AddressConstantsI.AddrUseContext.SERVICE_ADDRESS.getAddrUseContextValue();
+			allowInvalidZip = 0; // valid values: 0 = false:validates the user input, 1= true: Allows whatever the user entered input
+			callerName = "API"; // char(9) causes FML buffer error if too big
+			corpList[0] = this.getCorp();
+			cust_acct = "0"; // must be zero to work
+			duplicateAddressFlag = false;
+			plant = false;
+			siteId   = "01000415"; // base site to be used in browse
+			printOutput.printToShell (apiParams, "Parameter:addressType         : " + addressType,          null);
+			printOutput.printToShell (apiParams, "Parameter:addressUse          : " + addressUse,           null);
+			printOutput.printToShell (apiParams, "Parameter:allowInvalidZip     : " + allowInvalidZip,      null);
+			printOutput.printToShell (apiParams, "Parameter:callerName          : " + callerName,           null);
+			printOutput.printToShell (apiParams, "Parameter:corpList[0]         : " + corpList[0],          null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct           : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:duplicateAddressFlag: " + duplicateAddressFlag, null);
+			printOutput.printToShell (apiParams, "Parameter:plant               : " + plant,                null);
+			
+			billDate = new Date(this.getSystemDate());
+			billForm = "S    "; // Valid Values: S = Statement, N = None (EFTS customer)
+			// cust_acct = "0"; set above
+			cycle = 28; // gets reset during operation
+			installType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			isOffer = true;
+			jobType = ServiceConstantsI.JobType.JOBTYPE_INSTALL.getJobTypeValue();
+			//          12345678901234567890
+			lastName = "TESTING"; // char(20)
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			points = 0;
+			productLanguage = "1";
+			rateCode1  = "PQ";
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			reminderScheme  = "A    "; // updated during operation
+			salesRepId = "100";
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			serviceGroup = 1;
+			servicePoint = 1;
+			servicePointLocationCode = "A1 "; // 99504 API Test location
+			servicePointVOaction = 2; // no change = 0, change = 1, add = 2, remove = 3 
+			// siteId = "01000405"; Gets set at runtime after new site created
+			statementScheme = "A    ";
+			taskCode = "APIINSTALL";
+			printOutput.printToShell (apiParams, "Parameter:accountCategory         : " + accountCategory,          null);
+			printOutput.printToShell (apiParams, "Parameter:billDate                : " + billDate,                 null);
+			printOutput.printToShell (apiParams, "Parameter:billForm                : " + billForm,                 null);
+			printOutput.printToShell (apiParams, "Parameter:cycle                   : " + cycle,                    null);
+			printOutput.printToShell (apiParams, "Parameter:installType             : " + installType,              null);
+			printOutput.printToShell (apiParams, "Parameter:isOffer                 : " + isOffer,                  null);
+			printOutput.printToShell (apiParams, "Parameter:jobType                 : " + jobType,                  null);
+			printOutput.printToShell (apiParams, "Parameter:lastName                : " + lastName,                 null);
+			printOutput.printToShell (apiParams, "Parameter:orderInfoVOaction       : " + orderInfoVOaction,        null);
+			printOutput.printToShell (apiParams, "Parameter:points                  : " + points,                   null);
+			printOutput.printToShell (apiParams, "Parameter:productLanguage         : " + productLanguage,          null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode1               : " + rateCode1,                null);
+			printOutput.printToShell (apiParams, "Parameter:rateCodeVOaction        : " + rateCodeVOaction,         null);
+			printOutput.printToShell (apiParams, "Parameter:reminderScheme          : " + reminderScheme,           null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId              : " + salesRepId,               null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType            : " + scheduleType,             null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleVOaction        : " + scheduleVOaction,         null);
+			printOutput.printToShell (apiParams, "Parameter:serviceGroup            : " + serviceGroup,             null);
+			printOutput.printToShell (apiParams, "Parameter:servicePoint            : " + servicePoint,             null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointLocationCode: " + servicePointLocationCode, null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction    : " + servicePointVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:statementScheme         : " + statementScheme,          null);
+			printOutput.printToShell (apiParams, "Parameter:taskCode                : " + taskCode,                 null);
+			break;
+			
+		case 15: // UPDATE_CUST_DATA
+			appName = "Update Cust Data";
+			printOutput.printToShell (apiParams, "   UPDATE_CUST_DATA Operation Parameter Values",  null);
+			callerName = "API"; // char(9) causes FML buffer error if too big
+			cust_acct = "10000085"; // CURTIS MAYFIELD
+			phoneNumberReplaceFlag = false;
+			siteId   = "01000022";
+			
+			printOutput.printToShell (apiParams, "Parameter:callerName            : " + callerName,             null);
+			printOutput.printToShell (apiParams, "Parameter:Cust_acct             : " + cust_acct,              null);
+			printOutput.printToShell (apiParams, "Parameter:phoneNumberReplaceFlag: " + phoneNumberReplaceFlag, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId               : " + siteId,                  null);
+			
+			break;
+			
+		case 16: // PROSPECT_OFFER_SITE_TOOL
+			appName = "Prospect Offer Tool";
+			addressType = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			addressUse = AddressConstantsI.AddrUseContext.SERVICE_ADDRESS.getAddrUseContextValue();
+			allowInvalidZip = 0; // valid values: 0 = false:validates the user input, 1= true: Allows whatever the user entered input
+			appVersion = "1.3";
+			billDate = new Date(this.getSystemDate());
+			billForm = "S    "; // Valid Values: S = Statement, N = None (EFTS customer)
+			callerName = "API"; // char(9) causes FML buffer error if too big
+			corpList[0] = this.getCorp(); // can be changed by user at runtime
+			cust_acct = "0"; // must be zero to work
+			cycle = -1; // gets reset during operation
+			duplicateAddressFlag = false;
+			installType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			isOffer = true;
+			jobType = ServiceConstantsI.JobType.JOBTYPE_INSTALL.getJobTypeValue();
+			//          12345678901234567890
+			lastName = "TESTING"; // char(20)
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			outputMode = 3;
+			plant = false;
+			points = 0;
+			productLanguage = "1";
+			rateCode1  = "PQ";
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			reminderScheme  = "A    "; // updated during operation
+			salesRepId = "100";
+			scheduleType = ServiceConstantsI.NO_SCHEDULE;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			serviceGroup = 1;
+			servicePoint = 1;
+			servicePointLocationCode = "A1 "; // 99504 API Test location
+			servicePointVOaction = 2; // no change = 0, change = 1, add = 2, remove = 3 
+			siteId   = "01000415"; // base site to be used in browse for ORT 99504 - can be changed by user at runtime
+			statementScheme = "A    ";
+			
+			printOutput.printToToolShell (apiParams, "   PROSPECT_OFFER_SITE_TOOL Operation Parameter Values");
+			printOutput.printToToolShell (apiParams, "Parameter:corpList index 0        : " + corpList[0]);
+			printOutput.printToToolShell (apiParams, "Parameter:Password                : " + password);
+			printOutput.printToToolShell (apiParams, "Parameter:outputMode              : " + outputMode);
+			printOutput.printToToolShell (apiParams, "Parameter:User                    : " + user);
+			printOutput.printToToolShell (apiParams, "");
+			printOutput.printToToolShell (apiParams, "Parameter:addressType             : " + addressType);
+			printOutput.printToToolShell (apiParams, "Parameter:addressUse              : " + addressUse);
+			printOutput.printToToolShell (apiParams, "Parameter:allowInvalidZip         : " + allowInvalidZip);
+			printOutput.printToToolShell (apiParams, "Parameter:callerName              : " + callerName);
+			printOutput.printToToolShell (apiParams, "Parameter:billDate                : " + billDate);
+			printOutput.printToToolShell (apiParams, "Parameter:billForm                : " + billForm);
+			printOutput.printToToolShell (apiParams, "Parameter:corpList[0]             : " + corpList[0]);
+			printOutput.printToToolShell (apiParams, "Parameter:Cust_acct               : " + cust_acct);
+			printOutput.printToToolShell (apiParams, "Parameter:cycle                   : " + cycle);
+			printOutput.printToToolShell (apiParams, "Parameter:duplicateAddressFlag    : " + duplicateAddressFlag);
+			printOutput.printToToolShell (apiParams, "Parameter:installType             : " + installType);
+			printOutput.printToToolShell (apiParams, "Parameter:isOffer                 : " + isOffer);
+			printOutput.printToToolShell (apiParams, "Parameter:jobType                 : " + jobType);
+			printOutput.printToToolShell (apiParams, "Parameter:lastName                : " + lastName);
+			printOutput.printToToolShell (apiParams, "Parameter:orderInfoVOaction       : " + orderInfoVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:plant                   : " + plant);
+			printOutput.printToToolShell (apiParams, "Parameter:points                  : " + points);
+			printOutput.printToToolShell (apiParams, "Parameter:productLanguage         : " + productLanguage);
+			printOutput.printToToolShell (apiParams, "Parameter:rateCode1               : " + rateCode1);
+			printOutput.printToToolShell (apiParams, "Parameter:rateCodeVOaction        : " + rateCodeVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:reminderScheme          : " + reminderScheme);
+			printOutput.printToToolShell (apiParams, "Parameter:salesRepId              : " + salesRepId);
+			printOutput.printToToolShell (apiParams, "Parameter:scheduleType            : " + scheduleType);
+			printOutput.printToToolShell (apiParams, "Parameter:scheduleVOaction        : " + scheduleVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:serviceGroup            : " + serviceGroup);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePoint            : " + servicePoint);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePointLocationCode: " + servicePointLocationCode);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePointVOaction    : " + servicePointVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:siteId (root)           : " + siteId);
+			printOutput.printToToolShell (apiParams, "Parameter:statementScheme         : " + statementScheme);
+			printOutput.printToToolShell (apiParams, "Parameter:taskCode                : " + taskCode);
+			break;
+			
+		case 17: // UPDATE_ENTERPRISE_OPERATOR
+			appName = "Update Enterprise Operator";
+			operatorId = "AMSP01";
+			operatorStatus = "1";
+			userName = "amsp01";
+			//operatorId = "BOGUS";
+			//userName = "bogus";
+			printOutput.printToToolShell (apiParams, "Parameter:operatorId: " + operatorId);
+			printOutput.printToToolShell (apiParams, "Parameter:operatorStatus: " + operatorStatus);
+			printOutput.printToToolShell (apiParams, "Parameter:userName  : " + userName);
+			break;
+		
+		case 18: // PROSPECT_OFFER_SITE_DEMO	
+			appName = "Prospect Offer Demo";
+			addressType = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			addressUse = AddressConstantsI.AddrUseContext.SERVICE_ADDRESS.getAddrUseContextValue();
+			allowInvalidZip = 0; // valid values: 0 = false:validates the user input, 1= true: Allows whatever the user entered input
+			appVersion = "1.3";
+			billDate = new Date(this.getSystemDate());
+			billForm = "S    "; // Valid Values: S = Statement, N = None (EFTS customer)
+			callerName = "API"; // char(9) causes FML buffer error if too big
+			corpList[0] = this.getCorp(); // can be changed by user at runtime
+			cust_acct = "0"; // must be zero to work
+			cycle = -1; // gets reset during operation
+			duplicateAddressFlag = false;
+			installType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			isOffer = true;
+			jobType = ServiceConstantsI.JobType.JOBTYPE_INSTALL.getJobTypeValue();
+			//          12345678901234567890
+			lastName = "TESTING"; // char(20)
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			outputMode = 3;
+			plant = false;
+			points = 0;
+			productLanguage = "1";
+			rateCode1  = "PQ";
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			reminderScheme  = "A    "; // updated during operation
+			salesRepId = "100";
+			scheduleType = ServiceConstantsI.NO_SCHEDULE;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			serviceGroup = 1;
+			servicePoint = 1;
+			servicePointLocationCode = "A1 "; // 99504 API Test location
+			servicePointTarget = 1;
+			servicePointVOaction = 2; // no change = 0, change = 1, add = 2, remove = 3 
+			siteId   = "01000415"; // base site to be used in browse for ORT 99504 - can be changed by user at runtime
+			statementScheme = "A    ";
+			taskCode = "APIINSTALL";
+	
+			printOutput.printToToolShell (apiParams, "   PROSPECT_OFFER_SITE_DEMO Operation Parameter Values");
+			printOutput.printToToolShell (apiParams, "Parameter:corpList index 0        : " + corpList[0]);
+			printOutput.printToToolShell (apiParams, "Parameter:Password                : " + password);
+			printOutput.printToToolShell (apiParams, "Parameter:outputMode              : " + outputMode);
+			printOutput.printToToolShell (apiParams, "Parameter:User                    : " + user);
+			printOutput.printToToolShell (apiParams, "");
+			printOutput.printToToolShell (apiParams, "Parameter:addressType             : " + addressType);
+			printOutput.printToToolShell (apiParams, "Parameter:addressUse              : " + addressUse);
+			printOutput.printToToolShell (apiParams, "Parameter:allowInvalidZip         : " + allowInvalidZip);
+			printOutput.printToToolShell (apiParams, "Parameter:callerName              : " + callerName);
+			printOutput.printToToolShell (apiParams, "Parameter:billDate                : " + billDate);
+			printOutput.printToToolShell (apiParams, "Parameter:billForm                : " + billForm);
+			printOutput.printToToolShell (apiParams, "Parameter:corpList[0]             : " + corpList[0]);
+			printOutput.printToToolShell (apiParams, "Parameter:Cust_acct               : " + cust_acct);
+			printOutput.printToToolShell (apiParams, "Parameter:cycle                   : " + cycle);
+			printOutput.printToToolShell (apiParams, "Parameter:duplicateAddressFlag    : " + duplicateAddressFlag);
+			printOutput.printToToolShell (apiParams, "Parameter:installType             : " + installType);
+			printOutput.printToToolShell (apiParams, "Parameter:isOffer                 : " + isOffer);
+			printOutput.printToToolShell (apiParams, "Parameter:jobType                 : " + jobType);
+			printOutput.printToToolShell (apiParams, "Parameter:lastName                : " + lastName);
+			printOutput.printToToolShell (apiParams, "Parameter:orderInfoVOaction       : " + orderInfoVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:plant                   : " + plant);
+			printOutput.printToToolShell (apiParams, "Parameter:points                  : " + points);
+			printOutput.printToToolShell (apiParams, "Parameter:productLanguage         : " + productLanguage);
+			printOutput.printToToolShell (apiParams, "Parameter:rateCode1               : " + rateCode1);
+			printOutput.printToToolShell (apiParams, "Parameter:rateCodeVOaction        : " + rateCodeVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:reminderScheme          : " + reminderScheme);
+			printOutput.printToToolShell (apiParams, "Parameter:salesRepId              : " + salesRepId);
+			printOutput.printToToolShell (apiParams, "Parameter:scheduleType            : " + scheduleType);
+			printOutput.printToToolShell (apiParams, "Parameter:scheduleVOaction        : " + scheduleVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:serviceGroup            : " + serviceGroup);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePoint            : " + servicePoint);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePointLocationCode: " + servicePointLocationCode);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePointTarget      : " + servicePointTarget);
+			printOutput.printToToolShell (apiParams, "Parameter:servicePointVOaction    : " + servicePointVOaction);
+			printOutput.printToToolShell (apiParams, "Parameter:siteId (root)           : " + siteId);
+			printOutput.printToToolShell (apiParams, "Parameter:statementScheme         : " + statementScheme);
+			printOutput.printToToolShell (apiParams, "Parameter:taskCode                : " + taskCode);
+			break;
+			
+		case 19: // RE_ASSIGN_TECH_JOBS
+			appName = "Re-Assign Tech Jobs";
+			cdwDate = new Date("24-sep-2014");
+			fromTech = "100";
+			toTech   = "102";
+			printOutput.printToShell (apiParams, "Parameter:cdwDate : " + cdwDate,  null);
+			printOutput.printToShell (apiParams, "Parameter:fromTech: " + fromTech, null);
+			printOutput.printToShell (apiParams, "Parameter:toTech  : " + toTech,   null);
+			break;
+			
+		case 20: // CHANGE_OF_SERVICE
+			appName = "Change of Service";
+			billDate = new Date(this.getSystemDate());
+			billForm = "S    "; // Valid Values: S = Statement, N = None (EFTS customer)
+			callerName = "APIclient"; // char(9)
+			corp = "99504";
+			changeReason = "API"; 
+			//cust_acct = "45465844"; // 99504
+			cust_acct = "45465887"; // 99504
+			jobType = ServiceConstantsI.JobType.JOBTYPE_COS.getJobTypeValue();
+			orderGroupSeq = new BigDecimal(0); // Zero to get all Service Points
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_CHANGE.getOrderTypeValue();
+			overriddenRuleIds[0] = "";
+			overriddenRuleIds[1] = "";
+			queueHsdsHitFlag = false;
+			rateCode1  = "QP"; // Rate Code being added
+			rateCode2  = "SK"; // Rate Code being added
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			salesRepId = "100";
+			scheduleDate = new Date(this.getSystemDate());
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			servicePoint = 1;
+			servicePointTarget = 2; // Service Point number to add new rate Code
+			servicePointVOaction = 1; // no change = 0, change = 1, add = 2, remove = 3
+			siteId   = "01000470"; // 99504
+			taskCode = "APIINSTALL";
+			techId = "999";  // No Truck Tech
+			
+			printOutput.printToShell (apiParams, "   CHANGE_OF_SERVICE Operation Parameter Values",          null);
+			printOutput.printToShell (apiParams, "Parameter:billDate             : " + billDate,             null);
+			printOutput.printToShell (apiParams, "Parameter:billForm             : " + billForm,             null);
+			printOutput.printToShell (apiParams, "Parameter:callerName           : " + callerName,           null);
+			printOutput.printToShell (apiParams, "Parameter:changeReason         : " + changeReason,         null);
+			printOutput.printToShell (apiParams, "Parameter:corp                 : " + corp,                 null);
+			printOutput.printToShell (apiParams, "Parameter:cust_acct            : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:jobType              : " + jobType,              null);
+			printOutput.printToShell (apiParams, "Parameter:orderGroupSeq        : " + orderGroupSeq,        null);
+			printOutput.printToShell (apiParams, "Parameter:orderInfoVOaction    : " + orderInfoVOaction,    null);
+			printOutput.printToShell (apiParams, "Parameter:orderType            : " + orderType,            null);
+			printOutput.printToShell (apiParams, "Parameter:overriddenRuleIds    : " + "[0] " + overriddenRuleIds[0] + "[1] " + overriddenRuleIds[1], null);
+			printOutput.printToShell (apiParams, "Parameter:queueHsdsHitFlag     : " + queueHsdsHitFlag,     null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode1            : " + rateCode1,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode2            : " + rateCode2,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCodeVOaction     : " + rateCodeVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId           : " + salesRepId,           null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleDate         : " + scheduleDate,         null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType         : " + scheduleType,         null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleVOaction     : " + scheduleVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:servicePoint         : " + servicePoint,         null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointTarget   : " + servicePointTarget,   null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction : " + servicePointVOaction, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId               : " + siteId,               null);
+			printOutput.printToShell (apiParams, "Parameter:taskCode             : " + taskCode,             null);
+			printOutput.printToShell (apiParams, "Parameter:techId               : " + techId,               null);
+
+			break;
+			
+		case 21: // CONSTRAINTS_DUMP
+			printOutput.printToShell (apiParams, "   CONSTRAINTS_DUMP Operation Parameter Values",  null);
+			accountCategory = ServiceConstantsI.AccountCategory.RESIDENTIAL.getAcctCatTypeValue();
+			cust_acct = "45465887"; // 99504
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			siteId   = "01000470";
+			printOutput.printToShell (apiParams, "Parameter:accountCategory: " + accountCategory, null);
+			printOutput.printToShell (apiParams, "Parameter:cust_acct      : " + cust_acct,       null);
+			printOutput.printToShell (apiParams, "Parameter:orderType      : " + orderType,       null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType   : " + scheduleType,    null);
+			printOutput.printToShell (apiParams, "Parameter:siteId         : " + siteId,          null);
+			
+			break;
+			
+		case 22: // PAYCARD_INFO
+			printOutput.printToShell (apiParams, "   PAYCARD_INFO Operation Parameter Values",  null);
+			cust_acct = "45465902"; // 99504
+			orderType = ServiceConstantsI.OrderType.ORDER_INSTALL.getOrderTypeValue();
+			skipPayCard = false;
+
+			printOutput.printToShell (apiParams, "Parameter:cust_acc   : " + cust_acct,   null);
+			printOutput.printToShell (apiParams, "Parameter:orderType  : " + orderType,   null);
+			printOutput.printToShell (apiParams, "Parameter:skipPayCard: " + skipPayCard, null);
+		
+			break;
+			
+		case 23: // CHANGE_OF_SERVICE_2
+			billDate = new Date(this.getSystemDate());
+			billForm = "S    "; // Valid Values: S = Statement, N = None (EFTS customer)
+			callerName = "APIclient"; // char(9)
+			codCode = "2";
+			corp = "99517";
+			changeReason = "API"; 
+			cust_acct = "45465950"; // 99504
+			installType = 1; // installType - New move in flag
+			isProspect = false;
+			jobType = ServiceConstantsI.JobType.JOBTYPE_COS.getJobTypeValue();
+			offernum = new BigDecimal(0);
+			orderGroupSeq = new BigDecimal(0); // Zero to get all Service Points
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_CHANGE.getOrderTypeValue();
+			overriddenRuleIds[0] = "";
+			overriddenRuleIds[1] = "";
+			phoneNumber = null; // this will be set at runtime after retrieving available phone numbers
+			phoneNumSearch = 1; // phoneNumSearch - PHONE_NUMBER_SEARCH column from PARAM_TELCO
+			phoneClass = "4"; // PHONE_NUM_CLAS column from PHONE_NUMBER_INVENTORY
+			queueHsdsHitFlag = false;
+			rateCode1  = "LR"; // Rate Code being added
+			rateCodeVOaction = 2; // -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			salesRepId = "100";
+			scheduleDate = new Date(this.getSystemDate());
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			scheduleVOaction = 2; // 2 should mean add - javadoc needs updating
+			//serviceGroup = 0; //Valid Values: 1-99.PRODNOTIFICATION/ CUST_CONTRACT - 0=Both SG1 and SG2. 1=SG1. 2=SG2. 3=SG3. PRODQUECATALOG -0-99 (0 is added to consider notification product for contracts on both servicegroup 1 and 2). WIP_CONTRACT - 1=SG1. 2=SG2. 3=SG3.
+			servicePoint = 1;
+			servicePointTarget = 1; // Service Point number to add new rate Code
+			servicePointVOaction = 1; // no change = 0, change = 1, add = 2, remove = 3
+			siteId   = "01000401"; // 99504
+			taskCode = "APIINSTALL";
+			techId = "999";  // No Truck Tech
+			
+			printOutput.printToShell (apiParams, "   CHANGE_OF_SERVICE_2 Operation Parameter Values",        null);
+			printOutput.printToShell (apiParams, "Parameter:billDate             : " + billDate,             null);
+			printOutput.printToShell (apiParams, "Parameter:billForm             : " + billForm,             null);
+			printOutput.printToShell (apiParams, "Parameter:callerName           : " + callerName,           null);
+			printOutput.printToShell (apiParams, "Parameter:changeReason         : " + changeReason,         null);
+			printOutput.printToShell (apiParams, "Parameter:codCode              : " + codCode,              null);
+			printOutput.printToShell (apiParams, "Parameter:corp                 : " + corp,                 null);
+			printOutput.printToShell (apiParams, "Parameter:cust_acct            : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:isProspect           : " + isProspect,           null);
+			printOutput.printToShell (apiParams, "Parameter:jobType              : " + jobType,              null);
+			printOutput.printToShell (apiParams, "Parameter:Offernum             : " + offernum,             null);
+			printOutput.printToShell (apiParams, "Parameter:orderGroupSeq        : " + orderGroupSeq,        null);
+			printOutput.printToShell (apiParams, "Parameter:orderInfoVOaction    : " + orderInfoVOaction,    null);
+			printOutput.printToShell (apiParams, "Parameter:orderType            : " + orderType,            null);
+			printOutput.printToShell (apiParams, "Parameter:overriddenRuleIds    : " + "[0] " + overriddenRuleIds[0] + "[1] " + overriddenRuleIds[1], null);
+			printOutput.printToShell (apiParams, "Parameter:phoneNumber          : " + phoneNumber,          null);
+			printOutput.printToShell (apiParams, "Parameter:phoneNumSearch       : " + phoneNumSearch,       null);
+			printOutput.printToShell (apiParams, "Parameter:phoneClass           : " + phoneClass,           null);
+			printOutput.printToShell (apiParams, "Parameter:queueHsdsHitFlag     : " + queueHsdsHitFlag,     null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode1            : " + rateCode1,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCodeVOaction     : " + rateCodeVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId           : " + salesRepId,           null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleDate         : " + scheduleDate,         null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType         : " + scheduleType,         null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleVOaction     : " + scheduleVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:servicePoint         : " + servicePoint,         null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointTarget   : " + servicePointTarget,   null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction : " + servicePointVOaction, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId               : " + siteId,               null);
+			printOutput.printToShell (apiParams, "Parameter:taskCode             : " + taskCode,             null);
+			printOutput.printToShell (apiParams, "Parameter:techId               : " + techId,               null);
+
+			break;
+			
+		case 24: // RESCHEDULE_ORDER	
+			billDate = new Date(this.getSystemDate());
+			cancelReason = "API"; 
+			corp = "99504";
+			cust_acct = "45465926"; // 99504
+			isMustDo = false;
+			jobType = ServiceConstantsI.JobType.JOBTYPE_COS.getJobTypeValue();
+			offernum = new BigDecimal(6690);
+			orderGroupSeq = new BigDecimal(0); // Zero to get all Service Points
+			orderInfoVOaction = 1; // empty = -1, no change = 0, change = 1, add = 2, remove = 3
+			orderType = ServiceConstantsI.OrderType.ORDER_RESCHEDULE.getOrderTypeValue();
+			overriddenRuleIds[0] = "";
+			overriddenRuleIds[1] = "";
+			queueHsdsHitFlag = false;
+			rateCode1  = "PS"; // Rate Code being removed
+			rateCode2  = "08"; // Rate Code being removed
+			rateCode3  = "QP"; // Rate Code being added
+			rateCode4  = "SK"; // Rate Code being added
+			rateCodeVOaction = 0; // To be set in operation -1 = Inactive, no change = 0, change = 1, add = 2, remove = 3
+			salesRepId = "100";
+			scheduleDate = new Date(this.getSystemDate());
+			scheduleType = ServiceConstantsI.NO_TRUCK;
+			scheduleVOaction = 2; // 2 should mean add - CR submitted for javadoc update
+			servicePoint = 1;
+			servicePointTarget = 2; // Service Point number to make changes to
+			servicePointVOaction = 1; // no change = 0, change = 1, add = 2, remove = 3
+			siteId   = "01000415"; // 99504
+			skipServicePointData = false;
+			taskCode = "APIINSTALL";
+			techId = "999";  // No Truck Tech
+			
+			printOutput.printToShell (apiParams, "   RESCHEDULE_ORDER Operation Parameter Values",        null);
+			printOutput.printToShell (apiParams, "Parameter:billDate             : " + billDate,             null);
+			printOutput.printToShell (apiParams, "Parameter:cancelReason         : " + cancelReason,         null);
+			printOutput.printToShell (apiParams, "Parameter:corp                 : " + corp,                 null);
+			printOutput.printToShell (apiParams, "Parameter:cust_acct            : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:isMustDo             : " + isMustDo,             null);
+			printOutput.printToShell (apiParams, "Parameter:jobType              : " + jobType,              null);
+			printOutput.printToShell (apiParams, "Parameter:Offernum             : " + offernum,             null);
+			printOutput.printToShell (apiParams, "Parameter:orderGroupSeq        : " + orderGroupSeq,        null);
+			printOutput.printToShell (apiParams, "Parameter:orderInfoVOaction    : " + orderInfoVOaction,    null);
+			printOutput.printToShell (apiParams, "Parameter:orderType            : " + orderType,            null);
+			printOutput.printToShell (apiParams, "Parameter:overriddenRuleIds    : " + "[0] " + overriddenRuleIds[0] + "[1] " + overriddenRuleIds[1], null);
+			printOutput.printToShell (apiParams, "Parameter:queueHsdsHitFlag     : " + queueHsdsHitFlag,     null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode1            : " + rateCode1,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode2            : " + rateCode2,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode3            : " + rateCode3,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCode4            : " + rateCode4,            null);
+			printOutput.printToShell (apiParams, "Parameter:rateCodeVOaction     : " + rateCodeVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:salesRepId           : " + salesRepId,           null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleDate         : " + scheduleDate,         null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleType         : " + scheduleType,         null);
+			printOutput.printToShell (apiParams, "Parameter:scheduleVOaction     : " + scheduleVOaction,     null);
+			printOutput.printToShell (apiParams, "Parameter:servicePoint         : " + servicePoint,         null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointTarget   : " + servicePointTarget,   null);
+			printOutput.printToShell (apiParams, "Parameter:servicePointVOaction : " + servicePointVOaction, null);
+			printOutput.printToShell (apiParams, "Parameter:siteId               : " + siteId,               null);
+			printOutput.printToShell (apiParams, "Parameter:taskCode             : " + taskCode,             null);
+			printOutput.printToShell (apiParams, "Parameter:techId               : " + techId,               null);
+
+			break;
+			
+		case 25: // GET_TELEPHONY_SERVICES
+			cust_acct = "45465977"; // 99504
+			siteId = "01000401";
+			printOutput.printToShell (apiParams, "   GET_TELEPHONY_SERVICES Operation Parameter Values",        null);
+			printOutput.printToShell (apiParams, "Parameter:cust_acct            : " + cust_acct,            null);
+			printOutput.printToShell (apiParams, "Parameter:siteId               : " + siteId,               null);
+			
+			break;
+			
+		} // end of Switch 
+		
+		printOutput.printToShell (apiParams, "", null);
+	}
+	
+	// Internal method to get system date
+	private String getSystemDate () {
+		
+		DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+	    Calendar calendar = Calendar.getInstance();
+	    
+	    return (dateFormat.format(calendar.getTime()));
+	}
+	
+	// Internal method to print common parameter values
+	private void printCommonParameters(Parameters apiParams, PrintOutput printOutput) {
+		String amspHome = System.getenv("AMSP_HOME");
+		String[] fileNames = {"", ""};
+		fileNames = printOutput.getFileNames();
+		printOutput.printToShell (apiParams, "   Runtime Configuration Values",      null);
+		printOutput.printToShell(apiParams, "Configuration.getOPPort(): " + Configuration.getOPPort(), null);
+		printOutput.printToShell(apiParams, "Configuration.getOPIp(): " + Configuration.getOPIp(), null);
+		printOutput.printToShell(apiParams, "Configuration.getSysUser(): " + Configuration.getSysUser(), null);
+		printOutput.printToShell(apiParams, "Configuration.getDefaultLocale(): " + Configuration.getDefaultLocale(), null);
+		printOutput.printToShell (apiParams, "",                                        null);
+		printOutput.printToShell (apiParams, "   Runtime Common Parameter Values",      null);
+		printOutput.printToShell (apiParams, "AMSP_HOME             : " +amspHome,      null);
+		printOutput.printToShell (apiParams, "Parameter:Corp        : " + corp,         null);
+		printOutput.printToShell (apiParams, "Parameter:Text file   : " + fileNames[0], null);
+		printOutput.printToShell (apiParams, "Parameter:XML file    : " + fileNames[1], null);
+		printOutput.printToShell (apiParams, "Parameter:Locale      : " + locale,       null);
+		printOutput.printToShell (apiParams, "Parameter:Password    : " + password,     null);
+		printOutput.printToShell (apiParams, "Parameter:outputMode  : " + outputMode,   null);
+		printOutput.printToShell (apiParams, "Parameter:User        : " + user,         null);
+		printOutput.printToShell (apiParams, "",                                        null);
+	}
+	
+	// get methods
+	public int        getAccountingArea()           {return accountingArea;}
+	public int        getAccountCategory()          {return accountCategory;}
+	public int        getAddressUse()               {return addressUse;}
+	public int        getAddressType()              {return addressType;}
+	public short      getAllowInvalidZip()          {return allowInvalidZip;}
+	public String     getAmspVersion()              {return amspVersion;}
+	public String     getAppName()                  {return appName;}
+	public String     getAppVersion()               {return appVersion;}
+	public Date       getBillDate()                 {return billDate;}
+	public String     getBillForm()                 {return billForm;}
+	public String     getCancelReason()             {return cancelReason;}
+	public String     getCallerName()               {return callerName;}
+	public Date       getCdwDate()                  {return cdwDate;}
+	public Date       getCollStatDate()             {return collStatDate;}
+	public String     getComment()                  {return comment;}
+	public String     getCorp()                     {return corp;}
+	public String     getChangeReason()             {return changeReason;}
+	public String     getCodCode()                  {return codCode;}
+	public String[]   getCorpList()                 {return corpList;}
+	public String[]   getCorpSet()                  {return corpSet;}
+	public String     getCorpSetTarget()            {return corpSetTarget;}
+	public String     getCust_acct()                {return cust_acct;}
+	public int        getCycle()                    {return cycle;}
+	public boolean    getDuplicateAddressFlag()     {return duplicateAddressFlag;}
+	public String     getEquipmentId()              {return equipmentId;}
+	public String     getEquipmentLocation()        {return equipmentLocation;}
+	public short      getEquipmentVOaction()        {return equipmentVOaction;}
+	public String     getFileName()                 {return file_name;}
+	public String     getFilePath()                 {return file_path;}
+	public String     getFirstName()                {return firstName;}
+	public String     getFromTech()                 {return fromTech;}
+	public String     getHomePhone()                {return homePhone;}
+	public String     getInitial()                  {return initial;}
+	public int        getInstallType()              {return installType;}
+	public boolean    getIsFrontCounterMode()       {return isFrontCounterMode;}
+	public boolean    getIsMusdDo()                 {return isMustDo;}
+	public boolean    getIsOffer()                  {return isOffer;}
+	public boolean    getIsProspect()               {return isProspect;}
+	public int        getJobType()                  {return jobType;}
+	public String     getLastName()                 {return lastName;}
+	public String     getLocale()                   {return locale;}
+	public BigDecimal getOffernum()                 {return offernum;}
+	public String     getOperatorId()               {return operatorId;}
+	public String     getOperatorStatus()           {return operatorStatus;}
+	public short      getOrderInfoVOaction()        {return orderInfoVOaction;}
+	public BigDecimal getOrderGroupSeq()            {return orderGroupSeq;}
+	public int        getOrderType()                {return orderType;}
+	public int        getOutlet()                   {return outlet;}
+	public int        getOutputMode()               {return outputMode;}
+	public String[]   getOverriddenRuleIds()        {return overriddenRuleIds;}
+	public String     getPasswd()                   {return password;}
+	public String     getPhoneClass()               {return phoneClass;}
+	public String     getPhoneNumber()              {return phoneNumber;}
+	public boolean    getPhoneNumberReplaceFlag()   {return phoneNumberReplaceFlag;}
+	public int        getPhoneNumSearch()           {return phoneNumSearch;}
+	public boolean    getPlant()                    {return plant;}
+	public short      getPoints()                   {return points;}
+	public String     getProductLanguage()          {return productLanguage;}
+	public boolean    getQueueHsdsHitFlag()         {return queueHsdsHitFlag;}
+	public String     getRateCode1()                {return rateCode1;}
+	public String     getRateCode2()                {return rateCode2;}
+	public String     getRateCode3()                {return rateCode3;}
+	public String     getRateCode4()                {return rateCode4;}
+	public short      getRateCodeVOaction()         {return rateCodeVOaction;}
+	public String     getReminderScheme()           {return reminderScheme;}
+	public String     getSalesRepId()               {return salesRepId;}
+	public Date       getScheduleDate()             {return scheduleDate;}
+	public int        getScheduleType()             {return scheduleType;}
+	public short      getScheduleVOaction()         {return scheduleVOaction;}
+	public int        getServiceGroup()             {return serviceGroup;}
+	public String     getServicePackage()           {return servicePackage;}
+	public int        getServicePoint()             {return servicePoint;}
+	public String     getServicePointLocationCode() {return servicePointLocationCode;}
+	public int        getServicePointTarget()       {return servicePointTarget;}
+	public short      getServicePointVOaction()     {return servicePointVOaction;}
+	public String     getsiteId()                   {return siteId;}
+	public boolean    getSkipPayCard()              {return skipPayCard;}
+	public Boolean    getSkipServicePointData()     {return skipServicePointData;}
+	public String     getStatementScheme()          {return statementScheme;}
+	public int        getStatus()                   {return status;}
+	public String     getTaskCode()                 {return taskCode;}
+	public String     getTechId()                   {return techId;}
+	public String     getToTech()                   {return toTech;}
+	public String     getType()                     {return type;}
+	public String     getUserid()                   {return user;}
+	public String     getUserName()                 {return userName;}	
+	
+	// add a set method whenever a parameter value needs to change during an operation
+	public void setCdwDate                 (Date new_val)   {cdwDate                  = new_val;}
+	public void setCorp                    (String new_val) {corp                     = new_val;}
+	public void setCorpList                (String new_val) {corpList[0]              = new_val;}
+	public void setCorpSet                 (String new_val) {corpSet[0]               = new_val;}
+	public void setCycle                   (int new_val)    {cycle                    = new_val;}
+	public void setFirstName               (String new_val) {firstName                = new_val;}
+	public void setLastName                (String new_val) {lastName                 = new_val;}
+	public void setOutputMode              (int new_val)    {outputMode               = new_val;}
+	public void setPassword                (String new_val) {password                 = new_val;}
+	public void setPhoneNumber             (String new_val) {phoneNumber              = new_val;}
+	public void setReminderScheme          (String new_val) {reminderScheme           = new_val;}
+	public void setSalesRepId              (String new_val) {salesRepId               = new_val;}
+	public void setSiteId                  (String new_val) {siteId                   = new_val;}
+	public void setServicePointLocationCode(String new_val) {servicePointLocationCode = new_val;}
+	public void setStatementScheme         (String new_val) {statementScheme          = new_val;}
+	public void setTechId                  (String new_val) {techId                   = new_val;}
+	public void setUser                    (String new_val) {user                     = new_val;}
+	
+} // end of Parameters class

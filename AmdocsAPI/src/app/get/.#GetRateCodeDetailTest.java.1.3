@@ -1,0 +1,40 @@
+package app.get;
+
+import util.Login;
+import util.Parameters;
+import util.PrintOutput;
+import amdocs.amsp.exception.AmspServiceException;
+import amdocs.amsp.services.CorpparamFacade;
+import amdocs.amsp.valueobject.servicepoint.RateCodeVO;
+
+public class GetRateCodeDetailTest {
+	
+	private CorpparamFacade corpparamFacade = new CorpparamFacade();
+	private RateCodeVO rateCodeVO = new RateCodeVO();
+	
+	public RateCodeVO getRateCodeDetail (Parameters apiParams, Login login, PrintOutput printOutput, int rateCode1or2) {
+		try {
+			if (rateCode1or2 == 1) {
+				rateCodeVO = corpparamFacade.getRateCodeDetail(apiParams.getRateCode1(), apiParams.getCorp(), login.getTicket());
+			}
+			else if (rateCode1or2 == 2){
+				rateCodeVO = corpparamFacade.getRateCodeDetail(apiParams.getRateCode2(), apiParams.getCorp(), login.getTicket());
+			}
+			
+            
+			if (rateCodeVO != null) {
+				printOutput.printToShell(apiParams,
+	            		                 getClass().getName() + ":<rateCodeVO>" +rateCodeVO.toString() + "</rateCodeVO>",
+	            		                 rateCodeVO.toXml());
+			}
+			else {
+				printOutput.printToShell(apiParams, getClass().getName() + ":<rateCodeVO> is null", null);
+			}
+		
+	} catch (AmspServiceException e) {
+		printOutput.printExceptionToShell(apiParams, getClass().getName(), e);
+	}
+		
+		return(rateCodeVO);
+	}
+}

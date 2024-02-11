@@ -1,0 +1,68 @@
+package app.opr;
+
+import util.Login;
+import util.Parameters;
+import util.PrintOutput;
+import amdocs.amsp.exception.AmspServiceException;
+import amdocs.amsp.valueobject.servicepoint.EquipmentVO;
+import amdocs.amsp.valueobject.servicepoint.ServicePointVO;
+import amdocs.amsp.services.OpMainOrderOptionFacade;
+import amdocs.amsp.valueobject.order.OrderResultVO;
+import amdocs.amsp.valueobject.accountconstraints.VideoEquipmentConstraintsVO;
+import app.get.GetAllServicePointsTest;
+import app.get.GetEquipmentDetailsVO_Test;
+import app.get.GetVideoEquipmentConstraintsVO_Test;
+import app.update.UpdateEquipmentVO_Test;
+import app.update.UpdateServicePointVO_Test;
+
+public class OprAssignEquipmentToAccountTest {
+	
+	private GetEquipmentDetailsVO_Test getEquipmentDetailsVO_Test = new GetEquipmentDetailsVO_Test();
+	private EquipmentVO[] equipmentVOlist = new EquipmentVO[1];
+	private GetAllServicePointsTest getAllServicePointsTest = new GetAllServicePointsTest();
+	private ServicePointVO[] servicePointVOlist = null;
+	private OpMainOrderOptionFacade opMainOrderOptionFacade = new OpMainOrderOptionFacade();
+	private OrderResultVO orderResultVO = new OrderResultVO();
+	private UpdateEquipmentVO_Test updateEquipmentVO_Test = new UpdateEquipmentVO_Test();
+	private UpdateServicePointVO_Test updateServicePointVO_Test = new UpdateServicePointVO_Test();
+	private VideoEquipmentConstraintsVO videoEquipmentConstraintsVO = new VideoEquipmentConstraintsVO();
+	private GetVideoEquipmentConstraintsVO_Test getVideoEquipmentConstraintsVO_Test = new GetVideoEquipmentConstraintsVO_Test();
+	
+	public void getData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		equipmentVOlist[0] = getEquipmentDetailsVO_Test.getEquipmentDetails(apiParams, login, printOutput);
+		
+		getVideoEquipmentConstraintsVO_Test.getVideoEquipmentConstraints(apiParams, login, printOutput, equipmentVOlist[0]);
+
+		servicePointVOlist = getAllServicePointsTest.getAllServicePoints(apiParams, login, printOutput);
+	}
+	
+	public void setData(Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		updateEquipmentVO_Test.updateEquipmentVOforAssignEquipmentToAccount(apiParams, printOutput, equipmentVOlist[0], videoEquipmentConstraintsVO);
+		updateServicePointVO_Test.updateServicePointVOforAssignEquipmentToAccount(apiParams, printOutput, servicePointVOlist[0], equipmentVOlist);
+		
+	}
+	
+	public void saveData(Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		try {
+			
+			orderResultVO = opMainOrderOptionFacade.updateBoxData(servicePointVOlist, 
+																  apiParams.getCust_acct(), 
+																  apiParams.getsiteId(), 
+																  apiParams.getServiceGroup(), 
+																  "", 
+																  apiParams.getOverriddenRuleIds(), 
+																  false, 
+																  apiParams.getCorp(), 
+																  login.getTicket());
+			printOutput.printToShell(apiParams, 
+									 getClass().getName() + ":<orderResultVO>" + orderResultVO.toString() + "</orderResultVO>",
+									 orderResultVO.toXml());
+
+		} catch (AmspServiceException e) {
+			printOutput.printExceptionToShell(apiParams, getClass().getName(), e);
+		}
+	}
+}

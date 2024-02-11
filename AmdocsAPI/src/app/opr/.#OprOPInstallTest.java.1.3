@@ -1,0 +1,248 @@
+package app.opr;
+
+import util.Login;
+import util.Parameters;
+import util.PrintOutput;
+import amdocs.amsp.exception.AmspServiceException;
+import amdocs.amsp.valueobject.accountconstraints.WIPConstraintsVO;
+import amdocs.amsp.services.OpInstallFacade;
+import amdocs.amsp.valueobject.accountconstraints.CustomerConstraintsVO;
+import amdocs.amsp.valueobject.accountviewfinancials.AgedMoneyVO;
+import amdocs.amsp.valueobject.accountviewwip.OrderGroupVO;
+import amdocs.amsp.valueobject.accountviewwip.WipTaskInfoVO;
+import amdocs.amsp.valueobject.customer.CustomerDetailsVO;
+import amdocs.amsp.valueobject.financial.MoneyTransactionVO;
+import amdocs.amsp.valueobject.opquery.PollRecalculateServicesVO;
+import amdocs.amsp.valueobject.order.CurTransForecastTotalsVO;
+import amdocs.amsp.valueobject.order.EstimatedBillVO;
+import amdocs.amsp.valueobject.order.FinalTransForecastTotalsVO;
+import amdocs.amsp.valueobject.order.OrderInfoVO;
+import amdocs.amsp.valueobject.order.OrderResultVO;
+import amdocs.amsp.valueobject.order.OrderVO;
+import amdocs.amsp.valueobject.schedule.ScheduleVO;
+import amdocs.amsp.valueobject.servicepoint.RateCodeVO;
+import amdocs.amsp.valueobject.servicepoint.ServicePointVO;
+import amdocs.amsp.valueobject.servicepoint.TaskVO;
+import amdocs.amsp.valueobject.site.SiteDetailsVO;
+import app.get.GetCustomerConstraintsVO_Test;
+import app.get.GetNewInstallCustomerDetailsTest;
+import app.get.GetNewInstallOrderTest;
+import app.get.GetNewMoneyTransactionVO_Test;
+import app.get.GetRateCodeDetailTest;
+import app.get.GetSiteDetailVO_Test;
+import app.get.GetWIPConstraintsVO_Test;
+import app.get.GetWorkTaskCodesTest;
+import app.misc.RecalculateServicesTest;
+import app.set.SetCurTransForecastTotalsVO_Test;
+import app.set.SetFinalTransForecastTotalsVO_Test;
+import app.set.SetOrderInfoVO_Test;
+import app.set.SetOrderVO_Test;
+import app.set.SetTaskVO_Test;
+import app.update.UpdateCustomerVO_Test;
+import app.update.UpdateOrderInfoVO_Test;
+import app.update.UpdateOrderVO_Test;
+import app.update.UpdateRateCodeVO_Test;
+import app.update.UpdateScheduleVO_Test;
+import app.update.UpdateServicePointVO_Test;
+
+public class OprOPInstallTest {
+	
+	private OpInstallFacade opInstallFacade = new OpInstallFacade();
+	
+	private AgedMoneyVO[] agedMoneyVOList = new AgedMoneyVO[9];
+	private CurTransForecastTotalsVO curTransForecastTotalsVO = new CurTransForecastTotalsVO();
+	private CustomerDetailsVO customerDetailsVO = new CustomerDetailsVO();
+	private CustomerConstraintsVO customerConstraintsVO = new CustomerConstraintsVO();
+	private EstimatedBillVO[] estimatedBillVOArr = null;
+	private FinalTransForecastTotalsVO finalTransForecastTotalsVO = new FinalTransForecastTotalsVO();
+	private OrderGroupVO[] orderGroupVOList = new OrderGroupVO[1];
+	private OrderVO orderVO = new OrderVO();
+	private OrderVO recalcOrderVO = new OrderVO();
+	private OrderInfoVO orderInfoVO = new OrderInfoVO();
+	private OrderResultVO orderResultVO = new OrderResultVO();
+	private PollRecalculateServicesVO pollRecalculateServicesVO = new PollRecalculateServicesVO();
+	private RecalculateServicesTest recalculateServicesTest = new RecalculateServicesTest();
+	private RateCodeVO[] rateCodeVOList = new RateCodeVO[1];
+	private MoneyTransactionVO moneyTransactionVO = new MoneyTransactionVO();
+	private ScheduleVO scheduleVO = new ScheduleVO();
+	private ServicePointVO[] servicePointVOList = new ServicePointVO[1];
+	private SiteDetailsVO siteDetailsVO = new SiteDetailsVO();
+	private TaskVO[] taskVOList = new TaskVO[1];
+	private WIPConstraintsVO wIPConstraintsVO = new WIPConstraintsVO();
+	private WipTaskInfoVO wipTaskInfoVO = new WipTaskInfoVO();
+	
+	private GetCustomerConstraintsVO_Test getCustomerConstraintsVO_Test = new GetCustomerConstraintsVO_Test();
+	private GetNewInstallCustomerDetailsTest getNewInstallCustomerDetailsTest = new GetNewInstallCustomerDetailsTest();
+	private GetNewInstallOrderTest getNewInstallOrderTest = new GetNewInstallOrderTest();
+	private GetNewMoneyTransactionVO_Test getNewMoneyTransactionVO_Test = new GetNewMoneyTransactionVO_Test();
+	private GetRateCodeDetailTest getRateCodeDetailTest = new GetRateCodeDetailTest();
+	private GetSiteDetailVO_Test getSiteDetailVO_Test = new GetSiteDetailVO_Test();
+	private GetWIPConstraintsVO_Test getWIPConstraintsVO_Test = new GetWIPConstraintsVO_Test();
+	private GetWorkTaskCodesTest getWorkTaskCodesTest = new GetWorkTaskCodesTest();
+	private SetCurTransForecastTotalsVO_Test setCurTransForecastTotalsVO_Test = new SetCurTransForecastTotalsVO_Test();
+	private SetFinalTransForecastTotalsVO_Test setFinalTransForecastTotalsVO_Test = new SetFinalTransForecastTotalsVO_Test();
+	private SetOrderInfoVO_Test setOrderInfoVO_Test = new SetOrderInfoVO_Test();
+	private SetOrderVO_Test setOrderVO_Test = new SetOrderVO_Test();
+	private SetTaskVO_Test setTaskVO_Test = new SetTaskVO_Test();
+	
+	private UpdateCustomerVO_Test updateCustomerVO_Test = new UpdateCustomerVO_Test();
+	private UpdateOrderInfoVO_Test updateOrderInfoVO_Test = new UpdateOrderInfoVO_Test();
+	private UpdateOrderVO_Test updateOrderVO_Test = new UpdateOrderVO_Test();
+	private UpdateRateCodeVO_Test updateRateCodeVO_Test = new UpdateRateCodeVO_Test();
+	private UpdateServicePointVO_Test updateServicePointVO_Test = new UpdateServicePointVO_Test();
+	private UpdateScheduleVO_Test updateScheduleVO_Test = new UpdateScheduleVO_Test();
+	
+	public void getData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		orderVO = getNewInstallOrderTest.getNewInstallOrder(apiParams, login, printOutput);
+		
+		siteDetailsVO = getSiteDetailVO_Test.getSiteDetail(apiParams, login, printOutput);
+		
+		customerConstraintsVO = getCustomerConstraintsVO_Test.getCustomerConstraints(apiParams, login, printOutput);
+		
+		customerDetailsVO = getNewInstallCustomerDetailsTest.getNewInstallCustomerDetails(apiParams, login, printOutput);
+		
+		moneyTransactionVO = getNewMoneyTransactionVO_Test.getNewMoneyTranasction(apiParams, login, printOutput);
+		
+		rateCodeVOList[0] = getRateCodeDetailTest.getRateCodeDetail(apiParams, login, printOutput, 1);
+		
+		wIPConstraintsVO = getWIPConstraintsVO_Test.getWIPConstraints(apiParams, login, printOutput);
+	}
+	
+	public boolean setData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		//servicePointVOList = orderVO.getServicePointList();
+		
+		updateCustomerVO_Test.updateCustomerDetailsForInstall(apiParams, 
+															  printOutput,
+															  siteDetailsVO,
+															  customerConstraintsVO, 
+															  customerDetailsVO);
+		
+		wipTaskInfoVO = getWorkTaskCodesTest.loadTaskInfoVO(apiParams, login, printOutput, apiParams.getTaskCode());
+		
+		taskVOList[0] = setTaskVO_Test.setTaskVOforInstall(apiParams, printOutput, wipTaskInfoVO);
+		
+		updateRateCodeVO_Test.updateRateCodeVOforInstall(apiParams, printOutput, rateCodeVOList[0]);
+		
+		servicePointVOList[0] = new ServicePointVO();
+		
+		orderGroupVOList[0] = new OrderGroupVO();
+		orderGroupVOList[0].setOrderGroupSeq(apiParams.getOrderGroupSeq());
+		
+		updateServicePointVO_Test.updateServicePointVOforInstall(apiParams, 
+																 printOutput, 
+																 servicePointVOList[0], 
+																 rateCodeVOList, 
+																 orderGroupVOList, 
+																 taskVOList);
+		
+		/*servicePointList[0] = setServicePointVO_Test.setServicePointVOforInstall(apiParams,
+																				 printOutput, 
+																				 rateCodeList,
+																				 orderGroupVOList,
+																				 taskVOList);*/
+		
+		//orderVO.setServicePointList(servicePointVOList);
+		
+		orderInfoVO = orderVO.getOrderInfoList();
+		
+		scheduleVO = orderInfoVO.getSchedule();
+		updateScheduleVO_Test.updateScheduleVOforInstall(apiParams, 
+				 										 printOutput, 
+				 										 scheduleVO);
+		
+		updateAgedMoneyVOList (agedMoneyVOList);
+		
+		updateOrderInfoVO_Test.updateOrderInfoVOforInstall(apiParams, 
+				   										   printOutput,
+				   										   agedMoneyVOList,
+				   										   customerDetailsVO,
+				   										   orderGroupVOList, 
+				   										   orderInfoVO, 
+				   										   scheduleVO);
+		
+		//curTransForecastTotalsVO = setCurTransForecastTotalsVO_Test.setCurTransForecastTotalsVOforInstall(apiParams, printOutput);
+		//finalTransForecastTotalsVO = setFinalTransForecastTotalsVO_Test.setFinalTransForecastTotalsVOforInstall(apiParams, printOutput);
+		
+		/*orderInfoVO = setOrderInfoVO_Test.setOrderInfoVOforInstall(apiParams, 
+															  printOutput,
+															  curTransForecastTotalsVO,
+															  estimatedBillVOArr,
+															  finalTransForecastTotalsVO,
+															  scheduleVO,
+															  siteDetailsVO,
+															  wIPConstraintsVO);*/
+		
+		/*orderVO = setOrderVO_Test.setOrderVOforInstall(apiParams, 
+                								  	   printOutput,
+                								  	   orderInfoVO,
+                								  	   servicePointVOList);*/
+		
+		//orderVO.setOrderInfoList(orderInfoVO);
+		
+		updateOrderVO_Test.updateOrderVOforInstall(apiParams, 
+												   printOutput, 
+												   orderInfoVO,
+												   servicePointVOList,
+												   orderVO);
+		
+		printOutput.printToShell(apiParams, 
+				 				 getClass().getName() + ":<orderVO>" +	orderVO.toString() + "</orderVO>",
+				 				 orderVO.toXml());
+		
+		pollRecalculateServicesVO = recalculateServicesTest.recalculateServices(apiParams, 
+																				printOutput, 
+																				login, 
+																				orderVO, 
+																				customerDetailsVO, 
+																				siteDetailsVO);
+		
+		if (pollRecalculateServicesVO != null) {
+			recalcOrderVO = pollRecalculateServicesVO.getOrderVO();
+			
+			printOutput.printToShell(apiParams, 
+					 				 getClass().getName() + ":<recalcOrderVO>" +	recalcOrderVO.toString() + "</recalcOrderVO>",
+					 				 recalcOrderVO.toXml());
+			return (true);
+		}
+		else {
+			return (false);
+		}
+		// applyContractServices(OrderVO, String, String) - Method in class amdocs.amsp.services.ContractsFacade
+		// getValidAcctPriceStructure(String, String, long[], BigDecimal[], Date, BigDecimal, BigDecimal, int, String, String) - Method in class amdocs.amsp.services.PriceStructureFacade
+		// getTerminationFeeDetails(OrderVO, String, String) - Method in class amdocs.amsp.services.OpQueryFacade 
+	}
+	
+	public void saveData (Parameters apiParams, Login login, PrintOutput printOutput) {
+		
+		try {
+			orderResultVO = opInstallFacade.install(customerDetailsVO, 
+													siteDetailsVO, 
+													recalcOrderVO, 
+													null, 
+													moneyTransactionVO, 
+													apiParams.getQueueHsdsHitFlag(),
+													apiParams.getOverriddenRuleIds(),
+													apiParams.getCorp(), 
+													login.getTicket());
+			
+			if (orderResultVO != null) {
+				printOutput.printToShell(apiParams, getClass().getName() + ":<orderResultVO>" + orderResultVO.toString() + "</orderResultVO>",
+										 orderResultVO.toXml());
+			} else {
+				printOutput.printToShell(apiParams, getClass().getName() + ":<orderResultVO> is null", null);
+			}
+			
+		} catch (AmspServiceException e) {
+			printOutput.printExceptionToShell(apiParams, getClass().getName(), e);
+		}
+	}
+	
+	private void updateAgedMoneyVOList (AgedMoneyVO[] agedMoneyVOList) {
+		
+		for (int i = 0; i < agedMoneyVOList.length; i++) {
+			agedMoneyVOList[i] = new AgedMoneyVO();
+		}
+	}
+}

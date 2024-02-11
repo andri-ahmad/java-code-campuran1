@@ -1,0 +1,73 @@
+package app.main;
+
+//local classes
+import util.Lock;
+import util.Login;
+import util.Parameters;
+import util.PrintOutput;
+import amdocs.amsp.Configuration;
+import amdocs.amsp.valueobject.opquery.PhoneNumbersVO;
+import app.get.GetAvailablePhoneNumbersVO_Test;
+
+/**
+* @author JVANHOOF
+*  Driver class for API Operation class.
+*/
+
+public class MainGetAvailablePhoneNumbers {
+	public static void main(String[] args) {
+		Configuration.appName = Configuration.AMSP_API_APP_NAME;
+
+		// variables
+		boolean session;			// login session flag
+		
+		// lock type flag
+		boolean APC_lock   = false;
+
+		// create utility objects
+		Login login             = new Login();
+		PrintOutput printOutput = new PrintOutput();
+		Parameters apiParams    = new Parameters();
+		
+		// initialize utility objects
+		printOutput.initOutput(apiParams, printOutput);
+		apiParams.initParameters(Parameters.DEMO, apiParams, printOutput);
+		
+		// API test objects - create current test objects
+		PhoneNumbersVO[] phoneNumbersVO = null;
+		GetAvailablePhoneNumbersVO_Test currentTest = new GetAvailablePhoneNumbersVO_Test();
+		
+		// login
+		session = login.logInOut(login.LOGIN(), apiParams, printOutput);
+		
+		// operation
+		if (session){
+			// lock
+			Lock lock  = new Lock();
+			APC_lock   = lock.checkAPC_lock(apiParams, login, printOutput);
+
+			// get data
+			if (APC_lock == false){
+				phoneNumbersVO = currentTest.getAvailablePhoneNumbers(apiParams, login, printOutput);
+			}
+	 		
+			if (phoneNumbersVO != null) {
+				printOutput.printToShell(apiParams, "Operation suceeded", null);
+			} else {
+				printOutput.printToShell(apiParams, "Operation failed", null);
+			}
+			
+			// always logout
+	 		login.logInOut(login.LOGOUT(), apiParams, printOutput);
+		}
+		
+		// hold here until user closes output window
+		while (!printOutput.shell.isDisposed()) {
+			if (!printOutput.display.readAndDispatch()) printOutput.display.sleep(); 
+		}
+		
+		//cleanup display and print file
+		printOutput.finishOutput(apiParams, printOutput);
+		
+		} // end of main method
+}

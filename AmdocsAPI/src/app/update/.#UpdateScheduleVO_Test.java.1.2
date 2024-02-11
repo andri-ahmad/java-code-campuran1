@@ -1,0 +1,62 @@
+package app.update;
+
+import amdocs.amsp.valueobject.schedule.ScheduleVO;
+import util.Parameters;
+import util.PrintOutput;
+
+public class UpdateScheduleVO_Test {
+	
+public void updateScheduleVOforChangeOfService (Parameters apiParams, PrintOutput printOutput, ScheduleVO scheduleVO){
+		
+		scheduleVO.setAction(apiParams.getScheduleVOaction());
+		scheduleVO.setIsMustDo(false);
+		// setIsNoAppt(boolean isNoAppt)
+		// scheduleVO.setNoApptReasonCode("Z    ");
+		// scheduleVO.setNoApptReasonDesc("OTHER               ");
+		// setNoSchdReasonCode(java.lang.String noSchdReasonCode)
+		// setNoSchdReasonDesc(java.lang.String noSchdReasonDesc)
+		// setPriorityCode(java.lang.String priorityCode)
+		// setPriorityDesc(java.lang.String priorityDesc)
+		// scheduleVO.setQuotaGroupCode((short)2);
+		// setQuotaGroupDesc(java.lang.String quotaGroupDesc)
+		// setQuotaTimeSlotCode(short quotaTimeSlotCode)
+		// setQuotaTimeSlotDesc(java.lang.String quotaTimeSlotDesc)
+		scheduleVO.setScheduleDate(apiParams.getScheduleDate());
+		scheduleVO.setScheduleType((short)apiParams.getScheduleType());
+		scheduleVO.setTechId(apiParams.getTechId());
+		//scheduleVO.setTechName("NO-TRUCK      ");
+		// setTimeCodeCode(java.lang.String timeCodeCode)
+		// setTimeCodeDesc(java.lang.String timeCodeDesc)
+		
+		printOutput.printToShell(apiParams, 
+								 getClass().getName() + ":<scheduleVO>" + scheduleVO.toString() + "</scheduleVO>",
+								 scheduleVO.toXml());
+	}
+
+public void updateScheduleVOforInstall (Parameters apiParams, PrintOutput printOutput, ScheduleVO scheduleVO){
+	
+	scheduleVO.setAction(apiParams.getScheduleVOaction());
+	scheduleVO.setIsMustDo(false);
+	// setIsNoAppt(boolean isNoAppt)
+	// scheduleVO.setNoApptReasonCode("Z    ");
+	// scheduleVO.setNoApptReasonDesc("OTHER               ");
+	// setNoSchdReasonCode(java.lang.String noSchdReasonCode)
+	// setNoSchdReasonDesc(java.lang.String noSchdReasonDesc)
+	// setPriorityCode(java.lang.String priorityCode)
+	// setPriorityDesc(java.lang.String priorityDesc)
+	// scheduleVO.setQuotaGroupCode((short)2);
+	// setQuotaGroupDesc(java.lang.String quotaGroupDesc)
+	// setQuotaTimeSlotCode(short quotaTimeSlotCode)
+	// setQuotaTimeSlotDesc(java.lang.String quotaTimeSlotDesc)
+	scheduleVO.setScheduleDate(apiParams.getScheduleDate());
+	scheduleVO.setScheduleType((short)apiParams.getScheduleType());
+	scheduleVO.setTechId(apiParams.getTechId());
+	//scheduleVO.setTechName("NO-TRUCK      ");
+	// setTimeCodeCode(java.lang.String timeCodeCode)
+	// setTimeCodeDesc(java.lang.String timeCodeDesc)
+	
+	printOutput.printToShell(apiParams, 
+							 getClass().getName() + ":<scheduleVO>" + scheduleVO.toString() + "</scheduleVO>",
+							 scheduleVO.toXml());
+}
+}
